@@ -34,7 +34,7 @@ app.layout = html.Div([
                                 html.Span('Thickness of layer 1 (Layer 1).', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
-                    id='z-1', min=0, max=20, step=0.25, value=8,
+                    id='z-1', min=0, max=20, step=0.25, value=5,
                     marks={i: f'{i}' for i in range(0, 21, 5)},
                     className='slider', tooltip={'placement': 'bottom', 'always_visible': True}
                 ),
@@ -47,7 +47,7 @@ app.layout = html.Div([
                                 html.Span('Thickness of layer 2 (Layer 2).', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
-                    id='z-2', min=0, max=20, step=0.25, value=8,
+                    id='z-2', min=0, max=20, step=0.25, value=5,
                     marks={i: f'{i}' for i in range(0, 21, 5)},
                     className='slider', tooltip={'placement': 'bottom', 'always_visible': True}
                 ),
@@ -60,7 +60,7 @@ app.layout = html.Div([
                                 html.Span('Thickness of layer 3 (Layer 3).', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
-                    id='z-3', min=0, max=20, step=0.25, value=8,
+                    id='z-3', min=0, max=20, step=0.25, value=4,
                     marks={i: f'{i}' for i in range(0, 21, 5)},
                     className='slider', tooltip={'placement': 'bottom', 'always_visible': True}
                 ),
@@ -207,7 +207,7 @@ app.layout = html.Div([
                         ),
                     ]
                 ),
-                # Right column: The third graph (Pore pressure) takes the same height as the second one
+                # Right column: The third graph (change in stress) takes the same height as the second one
                 html.Div(
                     style={'width': '40%', 'height': '100%'},  # Adjusted to take 55% of the width
                     children=[
@@ -233,8 +233,7 @@ app.layout = html.Div([
 
 # Callback to update γ′ based on γ_r values for each layer
 @app.callback(
-    [Output(f'gama_prime_{i}', 'children') for i in range(1, 4)],
-    Output('b', 'value'),
+    [Output(f'gama_prime_{i}', 'children') for i in range(1, 4)] + [Output('b', 'value')],
     [Input(f'gama_r_{i}', 'value') for i in range(1, 4)],
     Input('a', 'value'),
     Input('b', 'value'),
@@ -577,11 +576,10 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         yanchor='bottom'  # Align the text to appear above the line
     )
 
+    no_of_steps = int((4*a)//0.1)
 
-    no_of_steps = int((4*a)//0.5)
-
-    x = np.linspace((total_depth / 2) - 2 * a, (total_depth / 2) + 2 * a, no_of_steps)
-    z = np.linspace(0, 4 * a, no_of_steps)
+    x = np.linspace((total_depth / 2) - a, (total_depth / 2) + a, int(no_of_steps/1))
+    z = np.linspace(0, 2.5 * a, int(no_of_steps/1))
     X, Z = np.meshgrid(x, z)
 
     # Initialize I as an array filled with zeros
@@ -639,10 +637,6 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         showlegend=False,
         hovertemplate='J: %{z:.3f}<br>x: %{x:.3f}<br>y: %{y:.3f}<extra></extra>'
     )
-
-
-
-
 
     # Add the contour trace to the figure
     soil_layers_fig.add_trace(contour_trace)
@@ -715,16 +709,12 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         margin=dict(l=90, r=40, t=10, b=10),
     )
 
-
     # Calculate pore water pressure based on conditions
     step = 0.05
     depths = np.linspace(0, z1 + z2 + z3, no_of_steps + 1, endpoint=True)  # Define depths from 0 to total depth
     stress_change = np.zeros_like(depths)
 
-
-
-
-    # Calculate pore pressure based on the conditions
+    # Calculate change in stress based on the conditions
     for i, depth in enumerate(depths):
         # claculate I for each depth
         R= np.sqrt(a**2 + b**2 + depth**2)
@@ -732,13 +722,6 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
             (np.arctan((a * b) / (R * depth))) + (((a * b * depth) / R) * ((1 / ((a**2) + (depth**2))) + (1 / ((b**2) + (depth**2)))))
         )
         stress_change[i] = I * q
-    
-
-
-
- 
-
-
 
     stress_change_fig.add_trace(go.Scatter(
         x=stress_change,
