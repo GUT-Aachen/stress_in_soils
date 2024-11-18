@@ -861,7 +861,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
             hoverformat=".2f"  # Sets hover value format for x-axis to two decimal places
         ),
         xaxis2=dict(  # Second x-axis (Displacement)
-            title=dict(text='Displacement (mm)', font=dict(size=12, weight='bold')),
+            title=dict(text='Settlement (mm)', font=dict(size=12, weight='bold')),
             overlaying='x',  # Share the same space as the first x-axis
             title_standoff=3,
             side='top',   
