@@ -578,7 +578,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
     )
 
 
-    no_of_steps = int((4*a)//0.1)
+    no_of_steps = int((4*a)//0.5)
 
     x = np.linspace((total_depth / 2) - 2 * a, (total_depth / 2) + 2 * a, no_of_steps)
     z = np.linspace(0, 4 * a, no_of_steps)
@@ -652,7 +652,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
     soil_layers_fig.update_layout(
         plot_bgcolor='white',
         # autosize=False,
-        xaxis_title= dict(text='Depth (m)', font=dict(size=14,weight='bold')),
+        xaxis_title= dict(text='Width (m)', font=dict(size=14,weight='bold')),
         xaxis=dict(
             range=[y_top, total_depth],  # Adjusting the x-range as needed
             side = 'top',
