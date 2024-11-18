@@ -34,7 +34,7 @@ app.layout = html.Div([
                                 html.Span('Thickness of layer 1 (Layer 1).', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
-                    id='z-1', min=0, max=20, step=0.25, value=5,
+                    id='z-1', min=0, max=20, step=0.25, value=4,
                     marks={i: f'{i}' for i in range(0, 21, 5)},
                     className='slider', tooltip={'placement': 'bottom', 'always_visible': True}
                 ),
@@ -47,7 +47,7 @@ app.layout = html.Div([
                                 html.Span('Thickness of layer 2 (Layer 2).', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
-                    id='z-2', min=0, max=20, step=0.25, value=5,
+                    id='z-2', min=0, max=20, step=0.25, value=4,
                     marks={i: f'{i}' for i in range(0, 21, 5)},
                     className='slider', tooltip={'placement': 'bottom', 'always_visible': True}
                 ),
@@ -91,13 +91,13 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Width of the foundation', className='tooltiptext')
                             ]),'(m)'], className='input-label'),
-                dcc.Input(id='a', type='number', value=6, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='a', type='number', value=3, step=0.1, style={'width': '12%'}, className='input-field'),
                 html.Label(["b", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Length of the foundation', className='tooltiptext')
                             ]),'(m)'], className='input-label'),
-                dcc.Input(id='b', type='number', value=4, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='b', type='number', value=1.5, step=0.1, style={'width': '12%'}, className='input-field'),
                 html.Label(["q", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -209,9 +209,17 @@ app.layout = html.Div([
                 ),
                 # Right column: The third graph (change in stress) takes the same height as the second one
                 html.Div(
-                    style={'width': '40%', 'height': '100%'},  # Adjusted to take 55% of the width
+                    style={'display': 'flex', 'flexDirection': 'column', 'width': '40%', 'height': '100%'},  # Adjusted to take 55% of the width
                     children=[
-                        dcc.Graph(id='pore-pressure-graph', style={'height': '100%', 'width': '100%'})
+                        html.Div(
+                            style={'height': '20%'},  
+                        ),
+                        html.Div(
+                            style={'height': '80%'},  
+                            children=[
+                                dcc.Graph(id='stress-change-graph', style={'height': '100%', 'width': '100%'}) 
+                            ]
+                        ),
                     ]
                 )
             ]
@@ -294,7 +302,7 @@ app.clientside_callback(
 @app.callback(
     Output('foundation-dimension-graph', 'figure'),
     Output('soil-layers-graph', 'figure'),
-    Output('pore-pressure-graph', 'figure'),
+    Output('stress-change-graph', 'figure'),
     Input('z-1', 'value'),
     Input('z-2', 'value'),
     Input('z-3', 'value'),
@@ -792,15 +800,9 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
                 mirror=True,
                 hoverformat=".2f"  # Sets hover value format for y-axis to two decimal places
             ),
+            margin=dict(l=30, r=10, t=10, b=20),
         )
 
-
-
-    stress_change_fig.update_layout(
-        # height=600,  # Adjust as needed
-        # width=800,   # Adjust as needed
-        margin=dict(l=30, r=10, t=180, b=20)    
-    )
 
     return foundation_fig, soil_layers_fig, stress_change_fig
 
