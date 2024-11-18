@@ -128,6 +128,30 @@ app.layout = html.Div([
                                 ])], className='input-label', style={'marginRight': '5px'}),
                     html.Div(id='gama_prime_1', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
+                html.Label([f'C', html.Sub('c'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Compression index of Layer 1', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='C_c_1', type='number', value=0.6, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'C', html.Sub('s'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Swelling index of Layer 1', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='C_s_1', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'e', html.Sub('0'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('initial void ratio of Layer 1', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='e_0_1', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'𝜎′', html.Sub('c'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Preconsolidation pressure of Layer 1', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='seg_p_1', type='number', value=50, step=0.5, style={'width': '12%'}, className='input-field'),
 
                 # Layer 2 Properties
                 html.H3('Layer 2:', style={'textAlign': 'left'}),
@@ -151,6 +175,30 @@ app.layout = html.Div([
                                 ])], className='input-label', style={'marginRight': '5px'}),
                     html.Div(id='gama_prime_2', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
+                html.Label([f'C', html.Sub('c'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Compression index of Layer 1', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='C_c_2', type='number', value=0.6, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'C', html.Sub('s'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Swelling index of Layer 2', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='C_s_2', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'e', html.Sub('0'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('initial void ratio of Layer 2', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='e_0_2', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'𝜎′', html.Sub('c'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Preconsolidation pressure of Layer 2', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='seg_p_2', type='number', value=50, step=0.5, style={'width': '12%'}, className='input-field'),
 
                 # Layer 3 Properties
                 html.H3('Layer 3:', style={'textAlign': 'left'}),
@@ -174,6 +222,30 @@ app.layout = html.Div([
                                 ])], className='input-label', style={'marginRight': '5px'}),
                     html.Div(id='gama_prime_3', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
+                html.Label([f'C', html.Sub('c'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Compression index of Layer 3', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='C_c_3', type='number', value=0.6, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'C', html.Sub('s'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Swelling index of Layer 3', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='C_s_3', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'e', html.Sub('0'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('initial void ratio of Layer 3', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='e_0_3', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
+                html.Label([f'𝜎′', html.Sub('c'), 
+                            html.Div(className='tooltip', children=[
+                                html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                html.Span('Preconsolidation pressure of Layer 3', className='tooltiptext')
+                            ])], className='input-label'),
+                dcc.Input(id='seg_p_3', type='number', value=50, step=0.5, style={'width': '12%'}, className='input-field'),
             ]),
         ]),
 
@@ -515,16 +587,6 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
                 showlegend=False,  # Hide legend for these lines
                 hoverinfo='skip'  # Skip the hover info for these lines
             ))
-            
-            # Add a line at the bottom of each layer other graph
-            stress_change_fig.add_trace(go.Scatter(
-                x=[0, 1000],  # Start at -1 and end at 1
-                y=[layer['top'], layer['top']],  # Horizontal line at the top of the layer
-                mode='lines',
-                line=dict(color='black', width=1, dash='dash'),
-                showlegend=False,  # Hide legend for these lines
-                hoverinfo='skip'  # Skip the hover info for these line
-            ))
 
 
     soil_layers_fig.add_trace(go.Scatter(
@@ -658,6 +720,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         xaxis=dict(
             range=[y_top, total_depth],  # Adjusting the x-range as needed
             side = 'top',
+            title_standoff=4,
             showticklabels=True,
             ticks='outside',
             ticklen=5,
@@ -674,6 +737,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
             range=[total_depth, y_top],  # Adjusted range for the y-axis (inverted for depth)
             showticklabels=True,
             ticks='outside',
+            title_standoff=4,
             ticklen=5,
             minor_ticks="inside",
             showline=True,
@@ -697,6 +761,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         xaxis=dict(
             range=x_range,  # Set the same x-range as soil_layers_fig
             showticklabels=False,
+            title_standoff=4,
             showgrid=False,
             showline=False,
             title=None,
@@ -706,6 +771,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         yaxis=dict(
             range=[0, a],  # Adjusted range for the y-axis in this figure
             showticklabels=False,
+            title_standoff=4,
             showgrid=False,
             showline=False,
             title=None,
@@ -759,49 +825,83 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         yanchor='bottom'  # Align the text to appear above the line
     )
 
-
-
+    for layer in layers:
+        if layer['thickness'] > 0:
+            # Add a line at the bottom of each layer other graph
+            stress_change_fig.add_trace(go.Scatter(
+                x=[0, 1.2 * max(stress_change)],  # Start at -1 and end at 1
+                y=[layer['top'], layer['top']],  # Horizontal line at the top of the layer
+                mode='lines',
+                xaxis='x2',
+                line=dict(color='black', width=1, dash='dash'),
+                showlegend=False,  # Hide legend for these lines
+                hoverinfo='skip'  # Skip the hover info for these line
+            ))
 
 
     stress_change_fig.update_layout(
-            xaxis_title= dict(text='Δσ<sub>E</sub> (kPa)', font=dict(size=14,weight='bold')),
-            plot_bgcolor='white',
-            xaxis=dict(
-                range=[0, 1.2 * max(stress_change)],
-                side='top',
-                zeroline=False,
-                showticklabels=True,
-                ticks='outside',
-                ticklen=5,
-                minor_ticks="inside",
-                showline=True,
-                linewidth=2,
-                linecolor='black',
-                showgrid=True,
-                gridwidth=1,
-                gridcolor='lightgrey',
-                mirror=True,
-                hoverformat=".2f"  # Sets hover value format for x-axis to two decimal places
-            ),
-            yaxis_title=dict(text='Depth (m)', font=dict(size=14,weight='bold')),
-            yaxis=dict(
-                range=[total_depth, y_top],
-                zeroline=False,
-                showticklabels=True,
-                ticks='outside',
-                ticklen=5,
-                minor_ticks="inside",
-                showline=True,
-                linewidth=2,
-                linecolor='black',
-                showgrid=True,
-                gridwidth=1,
-                gridcolor='lightgrey',
-                mirror=True,
-                hoverformat=".2f"  # Sets hover value format for y-axis to two decimal places
-            ),
-            margin=dict(l=30, r=10, t=10, b=20),
-        )
+        xaxis_title=dict(text='Δσ<sub>E</sub> (kPa)', font=dict(size=14, weight='bold')),
+        plot_bgcolor='white',
+        xaxis=dict(
+            range=[0, 1.2 * max(stress_change)],
+            side='top',
+            title_standoff=4,
+            zeroline=False,
+            showticklabels=True,
+            ticks='outside',
+            ticklen=5,
+            minor_ticks="inside",
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            showgrid=False,
+            gridwidth=1,
+            gridcolor='lightgrey',
+            mirror=True,
+            hoverformat=".2f"  # Sets hover value format for x-axis to two decimal places
+        ),
+        xaxis2=dict(  # Second x-axis (Displacement)
+            title=dict(text='Displacement (mm)', font=dict(size=12, weight='bold')),
+            overlaying='x',  # Share the same space as the first x-axis
+            title_standoff=3,
+            side='top',   
+            position = ((total_depth)/(total_depth-y_top)),  
+            showticklabels=True,
+            ticks='outside',
+            ticklen=5,
+            minor_ticks="inside",
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            showgrid=False,
+            gridwidth=1,
+            gridcolor='lightgrey',
+            mirror=True,
+            hoverformat=".2f",  # Sets hover value format for x-axis to two decimal places
+            range=[0,  max(stress_change)],  # Match the range of the first x-axis
+        ),
+        yaxis_title=dict(text='Depth (m)', font=dict(size=14, weight='bold')),
+        yaxis=dict(
+            range=[total_depth, y_top],
+            zeroline=False,
+            title_standoff=4,
+            showticklabels=True,
+            ticks='outside',
+            ticklen=5,
+            minor_ticks="inside",
+            showline=True,
+            linewidth=2,
+            linecolor='black',
+            showgrid=False,
+            gridwidth=1,
+            gridcolor='lightgrey',
+            mirror=True,
+            hoverformat=".2f"  # Sets hover value format for y-axis to two decimal places
+        ),
+        margin=dict(l=30, r=10, t=10, b=20),
+    )
+
+
 
 
     return foundation_fig, soil_layers_fig, stress_change_fig
