@@ -113,20 +113,20 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Dry unit weight of Layer 1', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gama_1', type='number', value=18, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_1', type='number', value=18, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Saturated unit weight of Layer 1', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gama_r_1', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_r_1', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                     html.Span('Submerged unit weight of Layer 1', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
-                    html.Div(id='gama_prime_1', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
+                    html.Div(id='gamma_prime_1', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
@@ -146,12 +146,12 @@ app.layout = html.Div([
                                 html.Span('initial void ratio of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
                 dcc.Input(id='e_0_1', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
-                html.Label([f'𝜎′', html.Sub('c'), 
+                html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Preconsolidation pressure of Layer 1', className='tooltiptext')
+                                html.Span('OverConsolidation ratio of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='seg_p_1', type='number', value=50, step=0.5, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='OCR_1', type='number', value=1, step=0.1, style={'width': '12%'}, className='input-field'),
 
                 # Layer 2 Properties
                 html.H3('Layer 2:', style={'textAlign': 'left'}),
@@ -160,20 +160,20 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Dry unit weight of Layer 2', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gama_2', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_2', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Saturated unit weight of Caly', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gama_r_2', type='number', value=21, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_r_2', type='number', value=21, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                    html.Span('Effective unit weight of Layer 2 under flow condition', className='tooltiptext')
+                                    html.Span('Submerged unit weight of Layer 2 under flow condition', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
-                    html.Div(id='gama_prime_2', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
+                    html.Div(id='gamma_prime_2', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
@@ -193,12 +193,12 @@ app.layout = html.Div([
                                 html.Span('initial void ratio of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
                 dcc.Input(id='e_0_2', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
-                html.Label([f'𝜎′', html.Sub('c'), 
+                html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Preconsolidation pressure of Layer 2', className='tooltiptext')
+                                html.Span('OverConsolidation ratio of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='seg_p_2', type='number', value=50, step=0.5, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='OCR_2', type='number', value=1, step=0.1, style={'width': '12%'}, className='input-field'),
 
                 # Layer 3 Properties
                 html.H3('Layer 3:', style={'textAlign': 'left'}),
@@ -207,20 +207,20 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Dry unit weight of Layer 3', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gama_3', type='number', value=18, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_3', type='number', value=18, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Saturated unit weight of Layer 3', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gama_r_3', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_r_3', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                     html.Span('Submerged unit weight of Layer 3', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
-                    html.Div(id='gama_prime_3', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
+                    html.Div(id='gamma_prime_3', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
@@ -240,12 +240,12 @@ app.layout = html.Div([
                                 html.Span('initial void ratio of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
                 dcc.Input(id='e_0_3', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
-                html.Label([f'𝜎′', html.Sub('c'), 
+                html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Preconsolidation pressure of Layer 3', className='tooltiptext')
+                                html.Span('OverConsolidation ratio of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='seg_p_3', type='number', value=50, step=0.5, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='OCR_3', type='number', value=1, step=0.1, style={'width': '12%'}, className='input-field'),
             ]),
         ]),
 
@@ -313,22 +313,22 @@ app.layout = html.Div([
 
 # Callback to update γ′ based on γ_r values for each layer
 @app.callback(
-    [Output(f'gama_prime_{i}', 'children') for i in range(1, 4)] + [Output('b', 'value')],
-    [Input(f'gama_r_{i}', 'value') for i in range(1, 4)],
+    [Output(f'gamma_prime_{i}', 'children') for i in range(1, 4)] + [Output('b', 'value')],
+    [Input(f'gamma_r_{i}', 'value') for i in range(1, 4)],
     Input('a', 'value'),
     Input('b', 'value'),
 )
-def update_gamma_prime(gama_r1, gama_r2, gama_r3, a_value, b_value):
+def update_gamma_prime(gamma_r1, gamma_r2, gamma_r3, a_value, b_value):
     # Ensure b does not exceed a
     if b_value > a_value:
         b_value = a_value  # or return a message, e.g., "b cannot exceed a"
 
     # Calculate γ′ as γ_r - 9.81 for each layer
-    gama_prime1 = round(gama_r1 - 10, 2) if gama_r1 is not None else None
-    gama_prime2 = round(gama_r2 - 10, 2) if gama_r2 is not None else None
-    gama_prime3 = round(gama_r3 - 10, 2) if gama_r3 is not None else None
+    gamma_prime1 = round(gamma_r1 - 10, 2) if gamma_r1 is not None else None
+    gamma_prime2 = round(gamma_r2 - 10, 2) if gamma_r2 is not None else None
+    gamma_prime3 = round(gamma_r3 - 10, 2) if gamma_r3 is not None else None
 
-    return f"= {gama_prime1} kN/m³", f"= {gama_prime2} kN/m³", f"= {gama_prime3} kN/m³", b_value
+    return f"= {gamma_prime1} kN/m³", f"= {gamma_prime2} kN/m³", f"= {gamma_prime3} kN/m³", b_value
 
 
 
@@ -345,31 +345,6 @@ app.clientside_callback(
 )
 
 
-
-
-# @app.callback(
-#     Output('water-table', 'max'),
-#     Output('h-3', 'max'),
-#     Output('h-3', 'value'),
-#     Input('z-1', 'value'),
-#     Input('z-2', 'value'),
-#     Input('z-3', 'value'),
-#     Input('water-table', 'value'),
-#     Input('h-3', 'value')
-# )
-# def update_water_table_max(z1_value, z2_value, z3_value, water_table_value, h3_value):
-#     if z1_value >= -water_table_value:
-#         water_table_max = z1_value
-#     else:
-#         water_table_max = 20
-#     h3_max = (1 + 0.5) * (z1_value + z2_value + z3_value)
-
-#     if z2_value == 0 and z3_value != 0:
-#         h3_value = water_table_value +z3_value
-
-#     return water_table_max, h3_max, h3_value
-
-
 # Callback to handle the animations and input updates
 @app.callback(
     Output('foundation-dimension-graph', 'figure'),
@@ -382,39 +357,45 @@ app.clientside_callback(
     Input('a', 'value'),
     Input('b', 'value'),
     Input('q', 'value'),
-    Input('gama_1', 'value'),
-    Input('gama_r_1', 'value'),
-    Input('gama_2', 'value'),
-    Input('gama_r_2', 'value'),
-    Input('gama_3', 'value'),
-    Input('gama_r_3', 'value')
+    Input('gamma_1', 'value'),
+    Input('gamma_r_1', 'value'),
+    Input('gamma_2', 'value'),
+    Input('gamma_r_2', 'value'),
+    Input('gamma_3', 'value'),
+    Input('gamma_r_3', 'value'),
+    Input('C_c_1', 'value'),
+    Input('C_s_1', 'value'),
+    Input('e_0_1', 'value'),
+    Input('OCR_1', 'value'),
+    Input('C_c_2', 'value'),
+    Input('C_s_2', 'value'),
+    Input('e_0_2', 'value'),
+    Input('OCR_2', 'value'),
+    Input('C_c_3', 'value'),
+    Input('C_s_3', 'value'),
+    Input('e_0_3', 'value'),
+    Input('OCR_3', 'value'),
+
+
     
 )
-def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, gama_r_2,  gama_3, gama_r_3):
-        # Constants
+def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2, gamma_r_2, 
+                   gamma_3, gamma_r_3, C_c_1, C_s_1, e_0_1, OCR_1, C_c_2, C_s_2, e_0_2, 
+                   OCR_2, C_c_3, C_s_3, e_0_3, OCR_3):
+    # Constants
     gamma_water = 10 # kN/m³ for water
 
     # total depth
     total_depth = z1 + z2 + z3
 
-    if z1 <= 0:
-        water_table = 0
-    if z3 <= 0:
-        h3 = 0
     # Ensure y_top has a default value
     y_top = -0.1*total_depth
 
     # Define soil layers and their boundaries with specified patterns
     layers = [
-        {'layer_id': '1', 'name': 'Layer 1', 'thickness' : z1,'top': 0, 'bottom': z1, 'color': 'rgb(244,164,96)','fillpattern': {'shape': '.'}, 
-         'x0': -0.2, 'h':water_table, 'text':'h\u2081'
-         },  # Dots for Sand
-        {'layer_id': '2', 'name': 'Layer 2', 'thickness' : z2, 'top': z1, 'bottom': z1 + z2, 'color': 'rgb(139,69,19)',
-         'fillpattern': {'shape': ''}, 'x0': 0
-         },  # Dashes for Layer 2
-        {'layer_id': '3', 'name': 'Layer 3', 'thickness' : z3, 'top': z1 + z2, 'bottom': z1 + z2 + z3, 'color': 'rgb(244,164,96)',
-         'fillpattern': {'shape': '.'}, 'x0': -0.70, 'text':'h\u2083'
-         },  # Dots for Sand
+        {'layer_id': '1', 'name': 'Layer 1', 'thickness' : z1,'top': 0, 'bottom': z1},  
+        {'layer_id': '2', 'name': 'Layer 2', 'thickness' : z2, 'top': z1, 'bottom': z1 + z2},  
+        {'layer_id': '3', 'name': 'Layer 3', 'thickness' : z3, 'top': z1 + z2, 'bottom': z1 + z2 + z3},  
     ]
 
     # Create the soil layers figure (139,69,19)
@@ -784,9 +765,10 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
     )
 
     # Calculate pore water pressure based on conditions
-    step = 0.05
-    depths = np.linspace(0, z1 + z2 + z3, no_of_steps + 1, endpoint=True)  # Define depths from 0 to total depth
+    step = delta_h =0.05
+    depths = np.linspace(0, z1 + z2 + z3, num=int((z1 + z2 + z3)/step) + 1, endpoint=True)  # Define depths from 0 to total depth
     stress_change = np.zeros_like(depths)
+    settelment = np.zeros_like(depths)
 
     # Calculate change in stress based on the conditions
     for i, depth in enumerate(depths):
@@ -802,8 +784,8 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         y=depths,
         mode='lines',
         line=dict(color='red', width=3 ),
-        name='Effective Vertical Stress, σ\'',
-        showlegend=False,
+        name='Stress increment with depth under point E, Δσ<sub>z,E</sub>',
+        showlegend=True,
     ))
 
     # add point dot with annottion for E point at the 0 level of the trace line
@@ -822,7 +804,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
         showarrow=False,  # No arrow for the text itself
         font=dict(size=14, color="black"),
         xanchor='left',
-        yanchor='bottom'  # Align the text to appear above the line
+        yanchor='top'  # Align the text to appear above the line
     )
 
     for layer in layers:
@@ -832,15 +814,105 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
                 x=[0, 1.2 * max(stress_change)],  # Start at -1 and end at 1
                 y=[layer['top'], layer['top']],  # Horizontal line at the top of the layer
                 mode='lines',
-                xaxis='x2',
                 line=dict(color='black', width=1, dash='dash'),
                 showlegend=False,  # Hide legend for these lines
                 hoverinfo='skip'  # Skip the hover info for these line
             ))
 
+    # Settelment calculations per depth level under point E
+    sigma_i = np.zeros_like(depths)
+    sigma_f = np.zeros_like(depths)
+    sigma_p = np.zeros_like(depths)
+    # OCR = sigma_c/sigma_i
+    for i, depth in enumerate(depths):
+        settelment[0] = settelment[1]  
+        if depth <= z1:
+            if depth <= water_table:
+                sigma_i[i] = depth * gamma_1
+            else:
+                sigma_i[i] = water_table * gamma_1 + (depth - water_table) * gamma_r_1
+
+            sigma_f[i] = sigma_i[i] + stress_change[i]
+            sigma_p[i] = OCR_1 * sigma_i[i]
+            
+            if OCR_1 == 1:
+                settelment[i] = 1000*(delta_h/(1+e_0_1)) * C_c_1 * np.log(sigma_f[i]/sigma_i[i])
+            elif OCR_1 > 1 and sigma_f[i] <= sigma_p[i]:
+                settelment[i] = 1000*(delta_h/(1+e_0_1)) * C_s_1 * np.log(sigma_f[i]/sigma_i[i])
+            elif OCR_1 > 1 and sigma_f[i] > sigma_p[i]:
+                settelment[i] = 1000*(delta_h/(1+e_0_1)) * ((C_s_1 * np.log(sigma_p[i]/sigma_i[i])) + 
+                                                        (C_c_1 * np.log(sigma_f[i]/sigma_p[i])))
+
+        elif depth > z1 and depth <= z1 + z2:
+            if depth <= water_table:
+                sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * gamma_2
+            else:
+                sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * gamma_r_2
+
+            sigma_f[i] = sigma_i[i] + stress_change[i]
+            sigma_p[i] = OCR_2 * sigma_i[i]
+
+            if OCR_2 == 1:
+                settelment[i] = 1000*(delta_h/(1+e_0_2)) * C_c_2 * np.log(sigma_f[i]/sigma_i[i])
+            elif OCR_2 > 1 and sigma_f[i] <= sigma_p[i]:
+                settelment[i] = 1000*(delta_h/(1+e_0_2)) * C_s_2 * np.log(sigma_f[i]/sigma_i[i])
+            elif OCR_2 > 1 and sigma_f[i] > sigma_p[i]:
+                settelment[i] = 1000*(delta_h/(1+e_0_2)) * ((C_s_2 * np.log(sigma_p[i]/sigma_i[i])) + 
+                                                        (C_c_2 * np.log(sigma_f[i]/sigma_p[i])))
+        else:
+            if depth <= water_table:
+                sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * gamma_3
+            else:
+                sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * gamma_r_3
+
+            sigma_f[i] = sigma_i[i] + stress_change[i]
+            sigma_p[i] = OCR_3 * sigma_i[i]
+
+            if OCR_3 == 1:
+                settelment[i] = 1000*(delta_h/(1+e_0_3)) * C_c_3 * np.log(sigma_f[i]/sigma_i[i])
+            elif OCR_3 > 1 and sigma_f[i] <= sigma_p[i]:
+                settelment[i] = 1000*(delta_h/(1+e_0_3)) * C_s_3 * np.log(sigma_f[i]/sigma_i[i])
+            elif OCR_3 > 1 and sigma_f[i] > sigma_p[i]:
+                settelment[i] = 1000* (delta_h/(1+e_0_3)) * ((C_s_3 * np.log(sigma_p[i]/sigma_i[i])) + 
+                                                        (C_c_3 * np.log(sigma_f[i]/sigma_p[i])))
+    
+    stress_change_fig.add_trace(go.Scatter(
+        x=settelment,
+        y=depths,
+        mode='lines',
+        xaxis='x2',
+        line=dict(color='green', width=3 ),
+        name='Stress increment with depth under point E, Δ𝜌<sub>z,E</sub>',
+        showlegend=True,
+    ))
+
+        # add point dot with annottion for E point at the 0 level of the trace line
+    stress_change_fig.add_trace(go.Scatter(
+        x=[max(settelment)],
+        y=[0],
+        mode='markers',
+        xaxis='x2',
+        marker=dict(size=10, color='black'),
+        showlegend=False,
+        hoverinfo='skip'
+    ))
+    stress_change_fig.add_annotation(
+        x=max(settelment), # x-coordinate of arrow head
+        y=0, # y-coordinate of arrow head
+        xref='x2',
+        text="E",  # The label text
+        showarrow=False,  # No arrow for the text itself
+        font=dict(size=14, color="black"),
+        xanchor='left',
+        yanchor='top'  # Align the text to appear above the line
+    )
+            
+
+
+    # print(step, settelment)
 
     stress_change_fig.update_layout(
-        xaxis_title=dict(text='Δσ<sub>E</sub> (kPa)', font=dict(size=14, weight='bold')),
+        xaxis_title=dict(text='Δσ<sub>z,E</sub> (kPa)', font=dict(size=14, weight='bold')),
         plot_bgcolor='white',
         xaxis=dict(
             range=[0, 1.2 * max(stress_change)],
@@ -861,14 +933,15 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
             hoverformat=".2f"  # Sets hover value format for x-axis to two decimal places
         ),
         xaxis2=dict(  # Second x-axis (Displacement)
-            title=dict(text='Settlement (mm)', font=dict(size=12, weight='bold')),
+            title=dict(text='Δ𝜌<sub>z,E</sub> (mm)', font=dict(size=12, weight='bold')),
             overlaying='x',  # Share the same space as the first x-axis
-            title_standoff=3,
+            title_standoff=1,
             side='top',   
-            position = ((total_depth)/(total_depth-y_top)),  
+            position = ((total_depth)/(total_depth-y_top)), 
+            anchor='free', 
             showticklabels=True,
             ticks='outside',
-            ticklen=5,
+            ticklen=3,
             minor_ticks="inside",
             showline=True,
             linewidth=2,
@@ -878,7 +951,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
             gridcolor='lightgrey',
             mirror=True,
             hoverformat=".2f",  # Sets hover value format for x-axis to two decimal places
-            range=[0,  max(stress_change)],  # Match the range of the first x-axis
+            range=[0,  1.4* max(settelment)],  # Match the range of the first x-axis
         ),
         yaxis_title=dict(text='Depth (m)', font=dict(size=14, weight='bold')),
         yaxis=dict(
@@ -897,6 +970,16 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gama_1, gama_r_1, gama_2, g
             gridcolor='lightgrey',
             mirror=True,
             hoverformat=".2f"  # Sets hover value format for y-axis to two decimal places
+        ),
+        legend=dict(
+            yanchor="bottom",  # Align the bottom of the legend box
+            y=0,               # Position the legend at the bottom inside the plot
+            xanchor="right",    # Align the right edge of the legend box
+            x=1,               # Position the legend at the right inside the plot
+            font= dict(size=9),  # Adjust font size
+            bgcolor="rgba(255, 255, 255, 0.7)",  # Optional: Semi-transparent white background
+            bordercolor="black",                 # Optional: Border color
+            borderwidth=1                        # Optional: Border width
         ),
         margin=dict(l=30, r=10, t=10, b=20),
     )
