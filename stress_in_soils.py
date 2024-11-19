@@ -423,39 +423,8 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         x1=x1_dim,
         y1=y1_dim,
         line=dict(width=3, color="black"),
-        fillcolor="lightskyblue",
-        opacity=0.5,
-    )
-    # Add the left-to-right arrow
-    foundation_fig.add_annotation(
-        x=x0_dim,  # Start x-coordinate (tail)
-        y=1.05 * y1_dim,  # y-coordinate
-        ax=x1_dim,  # End x-coordinate (head)
-        ay=1.05 * y1_dim,  # Same y-coordinate to create a horizontal line
-        xref="x",
-        yref="y",
-        axref="x",
-        ayref="y",
-        showarrow=True,
-        arrowhead=2,  # Arrowhead style
-        arrowwidth=2,
-        arrowcolor="black",
-    )
-
-    # Add the right-to-left arrow (reverse direction)
-    foundation_fig.add_annotation(
-        x=x1_dim,  # Start x-coordinate (tail)
-        y=1.05 * y1_dim,  # y-coordinate
-        ax=x0_dim,  # End x-coordinate (head)
-        ay=1.05 * y1_dim,  # Same y-coordinate to create a horizontal line
-        xref="x",
-        yref="y",
-        axref="x",
-        ayref="y",
-        showarrow=True,
-        arrowhead=2,  # Arrowhead style
-        arrowwidth=2,
-        arrowcolor="black",
+        # fillcolor="lightskyblue",
+        # opacity=0.5,
     )
 
     # Add text annotation at the middle of the line
@@ -467,38 +436,6 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
-    )
-
-    # Add the up-to-down arrow
-    foundation_fig.add_annotation(
-        x=0.995*x0_dim,  # Start x-coordinate 
-        y=y0_dim,  # y-coordinate (tail)
-        ax=0.995*x0_dim,  # Same x-coordinate to create a horizontal line
-        ay=y1_dim,  # End y-coordinate (head)
-        xref="x",
-        yref="y",
-        axref="x",
-        ayref="y",
-        showarrow=True,
-        arrowhead=2,  # Arrowhead style
-        arrowwidth=2,
-        arrowcolor="black",
-    )
-
-    # Add the down-to-up arrow (reverse direction)
-    foundation_fig.add_annotation(
-        x=0.995*x0_dim,  # Start x-coordinate (tail)
-        y=y1_dim,  # y-coordinate
-        ax=0.995*x0_dim,  # Same x-coordinate to create a horizontal line
-        ay=y0_dim,  # End y-coordinate (head)
-        xref="x",
-        yref="y",
-        axref="x",
-        ayref="y",
-        showarrow=True,
-        arrowhead=2,  # Arrowhead style
-        arrowwidth=2,
-        arrowcolor="black",
     )
 
     # Add text annotation at the middle of the line with dircetion of the text from down to up
@@ -543,18 +480,18 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         yanchor='bottom'  # Align the text to appear above the line
     )
 
-    # add a point E at the left bottom side of the foundation with annotation E, show a dot at the point
+    # add a point E at the center of the foundation with annotation E, show a dot at the point
     foundation_fig.add_trace(go.Scatter(
-        x=[(total_depth/2) - a/2],
-        y=[0],
+        x=[(total_depth/2)],
+        y=[b/2],
         mode='markers',
         marker=dict(size=10, color='black'),
         showlegend=False,
         hoverinfo='skip'
     ))
     foundation_fig.add_annotation(
-        x=(total_depth/2) - a/2, # x-coordinate of arrow head
-        y=0, # y-coordinate of arrow head
+        x=(total_depth/2), # x-coordinate of arrow head
+        y=b/2, # y-coordinate of arrow head
         text="E",  # The label text
         showarrow=False,  # No arrow for the text itself
         font=dict(size=14, color="black"),
@@ -770,7 +707,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         margin=dict(l=90, r=40, t=10, b=10),
     )
 
-    # Calculate pore water pressure based on conditions
+    # Third figure (stress_change_fig)
     step = delta_h =0.05
     depths = np.linspace(0, z1 + z2 + z3, num=int((z1 + z2 + z3)/step) + 1, endpoint=True)  # Define depths from 0 to total depth
     stress_change = np.zeros_like(depths)
@@ -779,11 +716,13 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     # Calculate change in stress based on the conditions
     for i, depth in enumerate(depths):
         # claculate I for each depth
-        R= np.sqrt(a**2 + b**2 + depth**2)
+        a_E = a/2
+        b_E = b/2
+        R= np.sqrt(a_E**2 + b_E**2 + depth**2)
         I = (1 / (2 * np.pi)) * (
-            (np.arctan((a * b) / (R * depth))) + (((a * b * depth) / R) * ((1 / ((a**2) + (depth**2))) + (1 / ((b**2) + (depth**2)))))
+            (np.arctan((a_E * b_E) / (R * depth))) + (((a_E * b_E * depth) / R) * ((1 / ((a_E**2) + (depth**2))) + (1 / ((b_E**2) + (depth**2)))))
         )
-        stress_change[i] = I * q
+        stress_change[i] = 4* I * q
 
     stress_change_fig.add_trace(go.Scatter(
         x=stress_change,
@@ -883,6 +822,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
                                                         (C_c_3 * np.log(sigma_f[i]/sigma_p[i])))
         settelment[0] = settelment[1]  
         total_settelment += settelment[i]
+    total_settelment -= settelment[0]
     
     stress_change_fig.add_trace(go.Scatter(
         x=settelment,
@@ -890,7 +830,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         mode='lines',
         xaxis='x2',
         line=dict(color='green', width=3 ),
-        name='Stress increment with depth under point E, Δ𝜌<sub>z,E</sub>',
+        name='Settelment with depth under point E, Δ𝜌<sub>z,E</sub>',
         showlegend=True,
     ))
 
