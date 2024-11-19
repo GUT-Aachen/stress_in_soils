@@ -283,8 +283,13 @@ app.layout = html.Div([
                 html.Div(
                     style={'display': 'flex', 'flexDirection': 'column', 'width': '40%', 'height': '100%'},  # Adjusted to take 55% of the width
                     children=[
-                        html.Div(
-                            style={'height': '20%'},  
+                        html.Div(style={'height': '20%'},
+                            children=[
+                            # html.H3('Total settelment under point E, =', style={'textAlign': 'center'}),
+                            html.Div(id='total-settlement', 
+                                     style={'textAlign': 'center', 'fontSize': '20px', 'fontWeight': 'bold', 'color': 'red', 
+                                            'padding-top': '10%', 'padding-left': '10%', 'padding-right': '10%'}),
+                            ]         
                         ),
                         html.Div(
                             style={'height': '80%'},  
@@ -350,6 +355,7 @@ app.clientside_callback(
     Output('foundation-dimension-graph', 'figure'),
     Output('soil-layers-graph', 'figure'),
     Output('stress-change-graph', 'figure'),
+    Output('total-settlement', 'children'),
     Input('z-1', 'value'),
     Input('z-2', 'value'),
     Input('z-3', 'value'),
@@ -823,14 +829,14 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     sigma_i = np.zeros_like(depths)
     sigma_f = np.zeros_like(depths)
     sigma_p = np.zeros_like(depths)
+    total_settelment = 0
     # OCR = sigma_c/sigma_i
     for i, depth in enumerate(depths):
-        settelment[0] = settelment[1]  
         if depth <= z1:
             if depth <= water_table:
                 sigma_i[i] = depth * gamma_1
             else:
-                sigma_i[i] = water_table * gamma_1 + (depth - water_table) * gamma_r_1
+                sigma_i[i] = water_table * gamma_1 + (depth - water_table) * (gamma_r_1 - gamma_water)
 
             sigma_f[i] = sigma_i[i] + stress_change[i]
             sigma_p[i] = OCR_1 * sigma_i[i]
@@ -847,7 +853,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             if depth <= water_table:
                 sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * gamma_2
             else:
-                sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * gamma_r_2
+                sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * (gamma_r_2 - gamma_water) 
 
             sigma_f[i] = sigma_i[i] + stress_change[i]
             sigma_p[i] = OCR_2 * sigma_i[i]
@@ -863,7 +869,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             if depth <= water_table:
                 sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * gamma_3
             else:
-                sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * gamma_r_3
+                sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * (gamma_r_3 - gamma_water)
 
             sigma_f[i] = sigma_i[i] + stress_change[i]
             sigma_p[i] = OCR_3 * sigma_i[i]
@@ -875,6 +881,8 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             elif OCR_3 > 1 and sigma_f[i] > sigma_p[i]:
                 settelment[i] = 1000* (delta_h/(1+e_0_3)) * ((C_s_3 * np.log(sigma_p[i]/sigma_i[i])) + 
                                                         (C_c_3 * np.log(sigma_f[i]/sigma_p[i])))
+        settelment[0] = settelment[1]  
+        total_settelment += settelment[i]
     
     stress_change_fig.add_trace(go.Scatter(
         x=settelment,
@@ -987,7 +995,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
 
 
 
-    return foundation_fig, soil_layers_fig, stress_change_fig
+    return foundation_fig, soil_layers_fig, stress_change_fig, f"Total settelment under point E = {total_settelment:.2f} mm"
 
 # Run the Dash app
 if __name__ == '__main__':
