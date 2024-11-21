@@ -1,9 +1,10 @@
 import os
 import dash
-from dash import dcc, html
-from dash.dependencies import Input, Output
+from dash import dcc, html, dash_table
+from dash.dependencies import Input, Output, State
 import numpy as np
 import plotly.graph_objs as go
+import time
 
 
 app = dash.Dash(__name__, meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
@@ -13,16 +14,14 @@ app._favicon = ('assets/favicon.ico')
 
 # Updated layout with sliders on top and layer properties below
 app.layout = html.Div([
-    dcc.Store(id='window-width'),
-
-    # Add the dcc.Interval component to track the window width
-    dcc.Interval(id='interval', interval=1000, n_intervals=0),
-
     # Main container
     html.Div(style={'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'height': '100vh'}, children=[
         # Control container (sliders)
         html.Div(id='control-container', style={'width': '25%', 'padding': '2%', 'flexDirection': 'column'}, children=[
             html.H1('Stress in Soils', style={'textAlign': 'center'}, className='h1'),
+
+            # Add the update button
+            html.Button("Update Graphs", id='update-button', n_clicks=0, style={'width': '100%', 'height': '5vh', 'marginBottom': '1vh'}),
 
             # Sliders for each layer
             html.Div(className='slider-container', children=[
@@ -31,7 +30,7 @@ app.layout = html.Div([
                     'Z', html.Sub('1'), ' (m)', 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Thickness of layer 1 (Layer 1).', className='tooltiptext')
+                                html.Span('Thickness of layer 1.', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
                     id='z-1', min=0, max=20, step=0.25, value=4,
@@ -44,7 +43,7 @@ app.layout = html.Div([
                     'Z', html.Sub('2'), ' (m)', 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Thickness of layer 2 (Layer 2).', className='tooltiptext')
+                                html.Span('Thickness of layer 2.', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
                     id='z-2', min=0, max=20, step=0.25, value=4,
@@ -57,7 +56,7 @@ app.layout = html.Div([
                     'Z', html.Sub('3'), ' (m)', 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Thickness of layer 3 (Layer 3).', className='tooltiptext')
+                                html.Span('Thickness of layer 3.', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
                     id='z-3', min=0, max=20, step=0.25, value=4,
@@ -65,12 +64,12 @@ app.layout = html.Div([
                     className='slider', tooltip={'placement': 'bottom', 'always_visible': True}
                 ),
 
-                # Layer 1 h slider
+                # Water table slider
                 html.Label(children=[
                     "Water Table", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Piezometric head for layer 1 (Layer 1).', className='tooltiptext')
+                                html.Span('Water table depth from the surface.', className='tooltiptext')
                             ])], className='slider-label'),
                 dcc.Slider(
                     id='water-table', min=0, max=20, step=0.25, value=1,
@@ -80,8 +79,6 @@ app.layout = html.Div([
 
             ]),
         
-
-
         # Properties for each layer
         html.Div(className='layer-properties', children=[
                 # foundation Properties
@@ -89,15 +86,15 @@ app.layout = html.Div([
                 html.Label(["a", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Width of the foundation', className='tooltiptext')
+                                html.Span('Length of the footing', className='tooltiptext')
                             ]),'(m)'], className='input-label'),
-                dcc.Input(id='a', type='number', value=3, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='a', type='number', value=4, step=0.1, style={'width': '12%'}, className='input-field'),
                 html.Label(["b", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Length of the foundation', className='tooltiptext')
+                                html.Span('Width of the footing', className='tooltiptext')
                             ]),'(m)'], className='input-label'),
-                dcc.Input(id='b', type='number', value=1.5, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='b', type='number', value=2, step=0.1, style={'width': '12%'}, className='input-field'),
                 html.Label(["q", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -133,13 +130,13 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_1', type='number', value=0.6, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_c_1', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_1', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_s_1', type='number', value=0.05, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -171,7 +168,7 @@ app.layout = html.Div([
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                    html.Span('Submerged unit weight of Layer 2 under flow condition', className='tooltiptext')
+                                    html.Span('Submerged unit weight of Layer 2', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
                     html.Div(id='gamma_prime_2', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
                 ]),
@@ -180,13 +177,13 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_2', type='number', value=0.6, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_c_2', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_2', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_s_2', type='number', value=0.05, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -227,13 +224,13 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_3', type='number', value=0.6, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_c_3', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_3', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_s_3', type='number', value=0.05, step=0.01, style={'width': '12%'}, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -283,12 +280,43 @@ app.layout = html.Div([
                 html.Div(
                     style={'display': 'flex', 'flexDirection': 'column', 'width': '40%', 'height': '100%'},  # Adjusted to take 55% of the width
                     children=[
-                        html.Div(style={'height': '20%'},
+                        html.Div(style={'height': '15%'},
+                            children=[dash_table.DataTable(
+                                    id='settelment-table',
+                                        columns=[
+                                            {'name': 'sublayer', 'id': 'column_1'},  # First column
+                                            {'name': 'settelment', 'id': 'column_2'},  # Second column
+                                        ],
+                                        data=[ ], # the contents of the table
+                                        merge_duplicate_headers=True,  # Merge cells for the title
+                                        style_data={
+                                            'whiteSpace': 'normal',
+                                            'height': 'auto',
+                                            'textAlign': 'center',
+                                        },
+                                        style_cell={
+                                            'padding': '0px',
+                                            'fontSize': '2vh',
+                                            'fontFamily': 'Arial',
+                                        },
+                                        style_header={
+                                            'display': 'none'  # Hides default headers
+                                        },
+                                        style_table={
+                                            'width': '100%',
+                                            'overflowX': 'auto'
+                                        }
+                                )],
+                         
+                        ),
+                        html.Div(style={'height': '5%', 'display': 'inline-block'}, className='graph-input-container',
                             children=[
-                            # html.H3('Total settelment under point E, =', style={'textAlign': 'center'}),
-                            html.Div(id='total-settlement', 
-                                     style={'textAlign': 'center', 'fontSize': '20px', 'fontWeight': 'bold', 'color': 'red', 
-                                            'padding-top': '10%', 'padding-left': '10%', 'padding-right': '10%'}),
+                            html.Label(["Preferred sublayer thickness (m)", 
+                                        html.Div(className='tooltip', children=[
+                                            html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
+                                            html.Span('Sublayer thickness to calculate change of stress and settelment', className='tooltiptext')
+                                        ])], className='input-label'),
+                            dcc.Input(id='input-factor', type='number', value=1, min=0.01, max=1, step=0.01, style={'margin': '1%', 'width':'12%'}),
                             ]         
                         ),
                         html.Div(
@@ -316,80 +344,99 @@ app.layout = html.Div([
     ])
 ])
 
-# Callback to update γ′ based on γ_r values for each layer
+# Callback to control the bounderies of the input fields and sliders
 @app.callback(
     [Output(f'gamma_prime_{i}', 'children') for i in range(1, 4)] + [Output('b', 'value')],
+    [Output(f'OCR_{i}', 'value') for i in range(1, 4)],
+    Output('water-table', 'max'),
+    Output('input-factor', 'max'),
+    [Input(f'z-{i}', 'value') for i in range(1, 4)],
     [Input(f'gamma_r_{i}', 'value') for i in range(1, 4)],
     Input('a', 'value'),
     Input('b', 'value'),
+    [Input(f'OCR_{i}', 'value') for i in range(1, 4)],
+    
 )
-def update_gamma_prime(gamma_r1, gamma_r2, gamma_r3, a_value, b_value):
+def update_gamma_prime(z1, z2, z3, gamma_r1, gamma_r2, gamma_r3, a_value, b_value, OCR1, OCR2, OCR3):
     # Ensure b does not exceed a
     if b_value > a_value:
         b_value = a_value  # or return a message, e.g., "b cannot exceed a"
+    
+    # if one or more of z1, z2, z3 is zero set the input factor the minimum of the others
+    inputfactor_max = min([value for value in (z1, z2, z3) if value != 0]) 
+
+    # Ensure OCR is at least 1
+    OCR1 = max(1, OCR1)
+    OCR2 = max(1, OCR2)
+    OCR3 = max(1, OCR3)
+
+    # insure water table is not below the maximum depth
+    water_table_max = z1 + z2 + z3
 
     # Calculate γ′ as γ_r - 9.81 for each layer
     gamma_prime1 = round(gamma_r1 - 10, 2) if gamma_r1 is not None else None
     gamma_prime2 = round(gamma_r2 - 10, 2) if gamma_r2 is not None else None
     gamma_prime3 = round(gamma_r3 - 10, 2) if gamma_r3 is not None else None
 
-    return f"= {gamma_prime1} kN/m³", f"= {gamma_prime2} kN/m³", f"= {gamma_prime3} kN/m³", b_value
+    return f"= {gamma_prime1} kN/m³", f"= {gamma_prime2} kN/m³", f"= {gamma_prime3} kN/m³", b_value, OCR1, OCR2, OCR3, water_table_max, inputfactor_max
 
 
 
 
-# JavaScript for updating window width
-app.clientside_callback(
-    """
-    function(n_intervals) {
-        return window.innerWidth;
-    }
-    """,
-    Output('window-width', 'data'),
-    Input('interval', 'n_intervals')
-)
+# # JavaScript for updating window width
+# app.clientside_callback(
+#     """
+#     function(n_intervals) {
+#         return window.innerWidth;
+#     }
+#     """,
+#     Output('window-width', 'data'),
+#     Input('interval', 'n_intervals')
+# )
 
 
 # Callback to handle the animations and input updates
 @app.callback(
-    Output('foundation-dimension-graph', 'figure'),
-    Output('soil-layers-graph', 'figure'),
-    Output('stress-change-graph', 'figure'),
-    Output('total-settlement', 'children'),
-    Input('z-1', 'value'),
-    Input('z-2', 'value'),
-    Input('z-3', 'value'),
-    Input('water-table', 'value'),
-    Input('a', 'value'),
-    Input('b', 'value'),
-    Input('q', 'value'),
-    Input('gamma_1', 'value'),
-    Input('gamma_r_1', 'value'),
-    Input('gamma_2', 'value'),
-    Input('gamma_r_2', 'value'),
-    Input('gamma_3', 'value'),
-    Input('gamma_r_3', 'value'),
-    Input('C_c_1', 'value'),
-    Input('C_s_1', 'value'),
-    Input('e_0_1', 'value'),
-    Input('OCR_1', 'value'),
-    Input('C_c_2', 'value'),
-    Input('C_s_2', 'value'),
-    Input('e_0_2', 'value'),
-    Input('OCR_2', 'value'),
-    Input('C_c_3', 'value'),
-    Input('C_s_3', 'value'),
-    Input('e_0_3', 'value'),
-    Input('OCR_3', 'value'),
-
-
-    
+    [Output('foundation-dimension-graph', 'figure'),
+     Output('soil-layers-graph', 'figure'),
+     Output('stress-change-graph', 'figure'),
+     Output('settelment-table', 'data')],
+    [Input('update-button', 'n_clicks')],
+    [State('input-factor', 'value'),
+     State('z-1', 'value'),
+     State('z-2', 'value'),
+     State('z-3', 'value'),
+     State('water-table', 'value'),
+     # Add all other input fields as State
+     State('a', 'value'),
+     State('b', 'value'),
+     State('q', 'value'),
+     State('gamma_1', 'value'),
+     State('gamma_r_1', 'value'),
+     State('gamma_2', 'value'),
+     State('gamma_r_2', 'value'),
+     State('gamma_3', 'value'),
+     State('gamma_r_3', 'value'),
+     State('C_c_1', 'value'),
+     State('C_s_1', 'value'),
+     State('e_0_1', 'value'),
+     State('OCR_1', 'value'),
+     State('C_c_2', 'value'),
+     State('C_s_2', 'value'),
+     State('e_0_2', 'value'),
+     State('OCR_2', 'value'),
+     State('C_c_3', 'value'),
+     State('C_s_3', 'value'),
+     State('e_0_3', 'value'),
+     State('OCR_3', 'value')]
 )
-def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2, gamma_r_2, 
+
+def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2, gamma_r_2, 
                    gamma_3, gamma_r_3, C_c_1, C_s_1, e_0_1, OCR_1, C_c_2, C_s_2, e_0_2, 
                    OCR_2, C_c_3, C_s_3, e_0_3, OCR_3):
     # Constants
     gamma_water = 10 # kN/m³ for water
+    # total_settelment = 0
 
     # total depth
     total_depth = z1 + z2 + z3
@@ -409,10 +456,12 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     soil_layers_fig = go.Figure()
     stress_change_fig = go.Figure()
 
+    # x-range and y range for the foundation figure
+
     # add top view dimension scaled to 0-1
-    x0_dim = total_depth/2 - a/2
+    x0_dim = 2*a - a/2
     y0_dim = 0
-    x1_dim = total_depth/2 + a/2
+    x1_dim = 2*a + a/2
     y1_dim = b
 
     # add rectangle for foundation top view
@@ -453,16 +502,16 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     # add A-A section the middle of foundation length b
     foundation_fig.add_shape(
         type="line",
-        x0=0.8*((total_depth/2) - a/2),
+        x0=0.8*x0_dim,
         y0=b/2,
-        x1=1.1*((total_depth/2) + a/2),
+        x1=1.1*x1_dim,
         y1=b/2,
         line=dict(color="black", width=2, dash='dash'),
     )   
 
     # add text at the begining and end of the line
     foundation_fig.add_annotation(
-        x=0.8*((total_depth/2) - a/2), # x-coordinate of arrow head
+        x=0.8*x0_dim, # x-coordinate of arrow head
         y=b/2, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
@@ -471,7 +520,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         yanchor='bottom'  # Align the text to appear above the line
     )
     foundation_fig.add_annotation(
-        x=1.1*((total_depth/2) + a/2), # x-coordinate of arrow head
+        x=1.1*x1_dim, # x-coordinate of arrow head
         y=b/2, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
@@ -482,7 +531,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
 
     # add a point E at the center of the foundation with annotation E, show a dot at the point
     foundation_fig.add_trace(go.Scatter(
-        x=[(total_depth/2)],
+        x=[(x1_dim-x0_dim)/2 + x0_dim],
         y=[b/2],
         mode='markers',
         marker=dict(size=10, color='black'),
@@ -490,7 +539,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         hoverinfo='skip'
     ))
     foundation_fig.add_annotation(
-        x=(total_depth/2), # x-coordinate of arrow head
+        x=(x1_dim-x0_dim)/2 + x0_dim, # x-coordinate of arrow head
         y=b/2, # y-coordinate of arrow head
         text="E",  # The label text
         showarrow=False,  # No arrow for the text itself
@@ -499,22 +548,32 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         yanchor='bottom'  # Align the text to appear above the line
     )
 
-
+    
     for layer in layers:
         if layer['thickness'] > 0:
             # Add a line at the top and bottom of each layer
             soil_layers_fig.add_trace(go.Scatter(
-                x=[0, total_depth],  # Start at -1 and end at 1
+                x=[0, 6*a], 
                 y=[layer['top'], layer['top']],  # Horizontal line at the top of the layer
                 mode='lines',
                 line=dict(color='black', width=1, dash='dash'),
                 showlegend=False,  # Hide legend for these lines
                 hoverinfo='skip'  # Skip the hover info for these lines
             ))
-
-
+            
+    # horizantal line at the bottonm of the third layer
     soil_layers_fig.add_trace(go.Scatter(
-        x=[0, total_depth],  # Start at -1 and end at 1
+        x=[0, 6*a],  # Start at -1 and end at 1
+        y=[total_depth, total_depth],  
+        mode='lines',
+        line=dict(color='black', width=1, dash='dash'),
+        showlegend=False,  # Hide legend for these lines
+        hoverinfo='skip'  # Skip the hover info for these line
+    ))
+
+    # Add a line at the water table
+    soil_layers_fig.add_trace(go.Scatter(
+        x=[0, 6*a],  # Start at -1 and end at 1
         y=[water_table, water_table],  # Horizontal line at the top of the layer
         mode='lines',
         line=dict(color='blue', width=2, dash='dot'),
@@ -526,9 +585,9 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     num_arrows = a//0.5
     for i in range(0, int(num_arrows+1)):
         soil_layers_fig.add_annotation(
-            x=(total_depth/2) - (a/2) + i*0.5, # x-coordinate of arrow head
+            x=x0_dim + i*0.5, # x-coordinate of arrow head
             y=0, # y-coordinate of arrow head
-            ax=(total_depth/2) - (a/2) + i*0.5, # x-coordinate of tail
+            ax=x0_dim + i*0.5, # x-coordinate of tail
             ay=y_top, # y-coordinate of tail
             xref="x",
             yref="y",
@@ -542,7 +601,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         )
 
     soil_layers_fig.add_trace(go.Scatter(
-        x=[(total_depth/2) - a/2, (total_depth/2) + a/2],  
+        x=[x0_dim, x1_dim],  
         y=[0, 0],  # Horizontal line at the top of the layer
         mode='lines',
         line=dict(color='black', width=4, dash='solid'),
@@ -552,7 +611,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
 
     # add A text at the begeing and end of the foundation
     soil_layers_fig.add_annotation(
-        x=0.90*((total_depth/2) - a/2), # x-coordinate of arrow head   
+        x=0.95*x0_dim, # x-coordinate of arrow head   
         y=0, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
@@ -561,7 +620,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         yanchor='bottom'  # Align the text to appear above the line
     )
     soil_layers_fig.add_annotation(
-        x=1.05*((total_depth/2) + a/2), # x-coordinate of arrow head
+        x=1.03*x1_dim, # x-coordinate of arrow head
         y=0, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
@@ -572,8 +631,8 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
 
     no_of_steps = int((4*a)//0.1)
 
-    x = np.linspace((total_depth / 2) - a, (total_depth / 2) + a, int(no_of_steps/1))
-    z = np.linspace(0, 2.5 * a, int(no_of_steps/1))
+    x = np.linspace(x0_dim - 1.5*a, x1_dim + 1.5*a, int(no_of_steps/1))
+    z = np.linspace(0.000000001, total_depth, int(no_of_steps/1))
     X, Z = np.meshgrid(x, z)
 
     # Initialize I as an array filled with zeros
@@ -583,17 +642,17 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
 
     for i, x_val in enumerate(x):
         
-        if x_val <= (total_depth / 2) - a / 2:
-            a1 = (total_depth / 2) + a / 2 - x_val
-            a2 = (total_depth / 2) - a / 2 - x_val
+        if x_val <= x0_dim:
+            a1 = x1_dim - x_val
+            a2 = x0_dim - x_val
             # print(b1, b2)
-        elif x_val >= (total_depth / 2) + a / 2:
-            a1 = x_val - ((total_depth / 2) - (a / 2))
-            a2 = x_val - ((total_depth / 2) + (a / 2))
+        elif x_val >= x1_dim:
+            a1 = x_val - x0_dim
+            a2 = x_val - x1_dim
             # print(x_val)
         else:
-            a1 = (total_depth / 2) + a / 2 - x_val
-            a2 = x_val - ((total_depth / 2) - (a / 2))
+            a1 = x1_dim - x_val
+            a2 = x_val - x0_dim
             # print(x_val)
 
         R1 = np.sqrt(a1**2 + b1**2 + Z**2)
@@ -606,21 +665,21 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             (np.arctan((a2 * b2) / (R2 * Z))) + (((a2 * b2 * Z) / R2) * ((1 / ((a2**2) + (Z**2))) + (1 / ((b2**2) + (Z**2)))))
         )
 
-        if x_val <= (total_depth / 2) - a / 2 or x_val >= (total_depth / 2) + a / 2:
+        if x_val <= x0_dim or x_val >= x1_dim:
             I[:, i] = 2 * I1[:, i] - 2 * I2[:, i]  # Adjust to take the i-th column slice if needed
         else:
             I[:, i] = 2 * I1[:, i] + 2 * I2[:, i]  # Adjust to take the i-th column slice if needed
 
     # Ensure I has no negative values
     I = np.where(I < 0, 0, I)
-    
+        
     # Create the contour trace with only lines and no color fill
     contour_trace = go.Contour(
         z=I,
         x=x,
         y=z,
         contours=dict(
-            start=0.1,
+            start=0,
             end=0.9,
             size=0.1,
             showlabels=True,
@@ -642,7 +701,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
         # autosize=False,
         xaxis_title= dict(text='Width (m)', font=dict(size=14,weight='bold')),
         xaxis=dict(
-            range=[y_top, total_depth],  # Adjusting the x-range as needed
+            range=[0, 4*a],  # Adjusting the x-range as needed
             side = 'top',
             title_standoff=4,
             showticklabels=True,
@@ -653,8 +712,8 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             linewidth=2,
             linecolor='black',
             zeroline=False,
-            scaleanchor="y",  # Link x and y axes scaling
-            scaleratio=1,
+            # scaleanchor="y",  # Link x and y axes scaling
+            # scaleratio=1,
         ),
         yaxis_title= dict(text='Depth (m)', font=dict(size=14,weight='bold')),
         yaxis=dict(
@@ -668,8 +727,8 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             linewidth=2,
             linecolor='black',
             zeroline=False,
-            scaleanchor="x",  # Link y-axis scaling with x-axis
-            scaleratio=1,
+            # scaleanchor="x",  # Link y-axis scaling with x-axis
+            # scaleratio=1,
         ),
         margin=dict(l=30, r=10, t=10, b=20),
     )
@@ -708,50 +767,170 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     )
 
     # Third figure (stress_change_fig)
-    step = delta_h =0.05
-    depths = np.linspace(0, z1 + z2 + z3, num=int((z1 + z2 + z3)/step) + 1, endpoint=True)  # Define depths from 0 to total depth
-    stress_change = np.zeros_like(depths)
-    settelment = np.zeros_like(depths)
+    
+    def stress_change_and_settelment(step):
+        # Define depths array
+        depths_z1 = np.arange(start=step / 2, stop=int(z1 / step) * step , step=step)
+        # Modify depths array for the first layer (z1)
+        if (z1 / step) % 1 != 0:  # Check if z1/step is not an integer
+            remaining_thickness1 = z1 - (depths_z1[-1] + step / 2)
+            depths_z1 = np.append(depths_z1, int(z1 / step) * step +  remaining_thickness1 / 2)
+        
 
-    # Calculate change in stress based on the conditions
-    for i, depth in enumerate(depths):
-        # claculate I for each depth
-        a_E = a/2
-        b_E = b/2
-        R= np.sqrt(a_E**2 + b_E**2 + depth**2)
-        I = (1 / (2 * np.pi)) * (
-            (np.arctan((a_E * b_E) / (R * depth))) + (((a_E * b_E * depth) / R) * ((1 / ((a_E**2) + (depth**2))) + (1 / ((b_E**2) + (depth**2)))))
-        )
-        stress_change[i] = 4* I * q
 
-    stress_change_fig.add_trace(go.Scatter(
-        x=stress_change,
-        y=depths,
-        mode='lines',
-        line=dict(color='red', width=3 ),
-        name='Stress increment with depth under point E, Δσ<sub>z,E</sub>',
-        showlegend=True,
-    ))
+        depths_z2 = np.arange(start=z1 + step / 2, stop=z1+int(z2 / step) * step , step=step)
+        # Modify depths array for the second layer (z2)
+        if (z2 / step) % 1 != 0:  # Check if z2/step is not an integer
+            remaining_thickness2 = z1+ z2 - (depths_z2[-1] - step / 2)
+            depths_z2 = np.append(depths_z2, depths_z2[-1] +  remaining_thickness2 / 2)
+               
+        depths_z3 = np.arange(start=z1+z2+step / 2, stop=z1+z2+int(z3 / step) * step, step=step)
+        # Modify depths array for the third layer (z3)
+        if (z3 / step) % 1 != 0:  # Check if z3/step is not an integer
+            remaining_thickness3 = z1 + z2 + z3 - (depths_z3[-1] - step / 2)
+            depths_z3 = np.append(depths_z3, depths_z3[-1] +  remaining_thickness3 / 2)
 
-    # add point dot with annottion for E point at the 0 level of the trace line
-    stress_change_fig.add_trace(go.Scatter(
-        x=[max(stress_change)],
-        y=[0],
-        mode='markers',
-        marker=dict(size=10, color='black'),
-        showlegend=False,
-        hoverinfo='skip'
-    ))
-    stress_change_fig.add_annotation(
-        x=max(stress_change), # x-coordinate of arrow head
-        y=0, # y-coordinate of arrow head
-        text="E",  # The label text
-        showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
-        xanchor='left',
-        yanchor='top'  # Align the text to appear above the line
-    )
+        # Initialize stress_change and settelment arrays
+        depths = np.concatenate([depths_z1, depths_z2, depths_z3])
+        stress_change = np.zeros_like(depths)
+        settelment = np.zeros_like(depths)
 
+        # Calculate change in stress based on the conditions
+        for i, depth in enumerate(depths):
+            # Calculate I for each depth
+            a_E = a / 2
+            b_E = b / 2
+            R = np.sqrt(a_E**2 + b_E**2 + depth**2)
+            I = (1 / (2 * np.pi)) * (
+                (np.arctan((a_E * b_E) / (R * depth))) +
+                (((a_E * b_E * depth) / R) * ((1 / ((a_E**2) + (depth**2))) + (1 / ((b_E**2) + (depth**2)))))
+            )
+            stress_change[i] = 4 * I * q
+
+        # Settlement calculations per depth level under point E
+        sigma_i = np.zeros_like(depths)
+        sigma_f = np.zeros_like(depths)
+        sigma_p = np.zeros_like(depths)
+        
+
+           
+        # OCR = sigma_c / sigma_i
+        for i, depth in enumerate(depths):
+            if depth <= z1:
+                if depth <= water_table:
+                    sigma_i[i] = depth * gamma_1
+                else:
+                    sigma_i[i] = water_table * gamma_1 + (depth - water_table) * (gamma_r_1 - gamma_water)
+
+                sigma_f[i] = sigma_i[i] + stress_change[i]
+                sigma_p[i] = OCR_1 * sigma_i[i]
+
+                if OCR_1 == 1:
+                    delta_settlement = 1000 * (step / (1 + e_0_1)) * C_c_1 * np.log(sigma_f[i] / sigma_i[i])
+                elif OCR_1 > 1 and sigma_f[i] <= sigma_p[i]:
+                    delta_settlement = 1000 * (step / (1 + e_0_1)) * C_s_1 * np.log(sigma_f[i] / sigma_i[i])
+                elif OCR_1 > 1 and sigma_f[i] > sigma_p[i]:
+                    delta_settlement = 1000 * (step / (1 + e_0_1)) * (
+                        (C_s_1 * np.log(sigma_p[i] / sigma_i[i])) +
+                        (C_c_1 * np.log(sigma_f[i] / sigma_p[i]))
+                    )
+            elif depth > z1 and depth <= z1 + z2:
+                if depth <= water_table:
+                    sigma_i[i] = z1*gamma_1 + (depth - z1) * gamma_2
+                else:
+                    sigma_i[i] = water_table*gamma_1 + (z1-water_table)*(gamma_r_1-gamma_water)  + (depth - z1) * (gamma_r_2 - gamma_water)
+
+                sigma_f[i] = sigma_i[i] + stress_change[i]
+                sigma_p[i] = OCR_2 * sigma_i[i]
+
+                if OCR_2 == 1:
+                    delta_settlement = 1000 * (step / (1 + e_0_2)) * C_c_2 * np.log(sigma_f[i] / sigma_i[i])
+                elif OCR_2 > 1 and sigma_f[i] <= sigma_p[i]:
+                    delta_settlement = 1000 * (step / (1 + e_0_2)) * C_s_2 * np.log(sigma_f[i] / sigma_i[i])
+                elif OCR_2 > 1 and sigma_f[i] > sigma_p[i]:
+                    delta_settlement = 1000 * (step / (1 + e_0_2)) * (
+                        (C_s_2 * np.log(sigma_p[i] / sigma_i[i])) +
+                        (C_c_2 * np.log(sigma_f[i] / sigma_p[i]))
+                    )
+            else:
+                if depth <= water_table:
+                    sigma_i[i] = z1*gamma_1 + z2*gamma_2 + (depth - z1 - z2) * gamma_3
+                else:
+                    if z1 > water_table:
+                        sigma_i[i] = water_table*gamma_1 + (z1-water_table)*(gamma_r_1-gamma_water)  + z2 * (gamma_r_2 - gamma_water) + (depth - z1 - z2) * (gamma_r_3 - gamma_water)
+                    else:
+                        sigma_i[i] = water_table*gamma_1 + (water_table-z1)*gamma_2  + (z1+z2-water_table) * (gamma_r_2 - gamma_water)+ (depth- z1 - z2) * (gamma_r_3 - gamma_water)
+
+                sigma_f[i] = sigma_i[i] + stress_change[i]
+                sigma_p[i] = OCR_3 * sigma_i[i]
+
+                if OCR_3 == 1:
+                    delta_settlement = 1000 * (step / (1 + e_0_3)) * C_c_3 * np.log(sigma_f[i] / sigma_i[i])
+                elif OCR_3 > 1 and sigma_f[i] <= sigma_p[i]:
+                    delta_settlement = 1000 * (step / (1 + e_0_3)) * C_s_3 * np.log(sigma_f[i] / sigma_i[i])
+                elif OCR_3 > 1 and sigma_f[i] > sigma_p[i]:
+                    delta_settlement = 1000 * (step / (1 + e_0_3)) * (
+                        (C_s_3 * np.log(sigma_p[i] / sigma_i[i])) +
+                        (C_c_3 * np.log(sigma_f[i] / sigma_p[i]))
+                    )
+            # Update cumulative settlement
+            settelment[i] = delta_settlement + (settelment[i-1] if i > 0 else 0)
+
+            # Total settlement is the final cumulative value
+            total_settelment = settelment[-1]
+
+        return depths, stress_change, settelment, total_settelment
+
+   # Initialize the settlement table with the title row
+    settelment_table = [
+        {'column_1': 'Sublayer thickness (m)', 'column_2': 'Total settlement (mm)'}  # Title row
+    ]
+
+    # Add the stress change and settlement traces to the figure
+    for i, step in enumerate((sublayer_thickness, 0.05)):
+        depths, stress_change, settelment, total_settelment = stress_change_and_settelment(step)
+        if step != 0.05:
+            dashed = 'dash'
+            mode = 'lines+markers'
+        else:
+            dashed = 'solid'
+            mode = 'lines'
+
+        # Draw stress change with depth under point E
+        stress_change_fig.add_trace(go.Scatter(
+            x=stress_change,
+            y=depths,
+            mode=mode,
+            line=dict(color='red', width=3, dash=dashed),
+            name='Stress increment, Δσ<sub>z,E</sub>, sublayer thickness = '+str(step)+'m',
+            showlegend=True,
+        ))
+
+        # Draw settlement with depth under point E
+        stress_change_fig.add_trace(go.Scatter(
+            x=settelment,
+            y=depths,
+            mode=mode,
+            # line_shape='vhv',
+            xaxis='x2',
+            line=dict(color='green', width=3, dash=dashed),
+            name='Settlement, Δ𝜌<sub>z,E</sub>, sublayer thickness = '+str(step)+'m',
+            showlegend=True,
+        )) 
+        ref_pre = ""
+        if step == 0.05:
+            ref_pre = "Reference: "
+        else:
+            ref_pre = "Preffered: "
+
+        # Append data for the current loop to the settlement table
+        settelment_table.append({
+            'column_1': f'{ref_pre}{step}',  # Sublayer thickness
+            'column_2': f'{round(total_settelment, 2)}'  # Total settlement
+        })
+
+
+            
     for layer in layers:
         if layer['thickness'] > 0:
             # Add a line at the bottom of each layer other graph
@@ -763,101 +942,19 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
                 showlegend=False,  # Hide legend for these lines
                 hoverinfo='skip'  # Skip the hover info for these line
             ))
-
-    # Settelment calculations per depth level under point E
-    sigma_i = np.zeros_like(depths)
-    sigma_f = np.zeros_like(depths)
-    sigma_p = np.zeros_like(depths)
-    total_settelment = 0
-    # OCR = sigma_c/sigma_i
-    for i, depth in enumerate(depths):
-        if depth <= z1:
-            if depth <= water_table:
-                sigma_i[i] = depth * gamma_1
-            else:
-                sigma_i[i] = water_table * gamma_1 + (depth - water_table) * (gamma_r_1 - gamma_water)
-
-            sigma_f[i] = sigma_i[i] + stress_change[i]
-            sigma_p[i] = OCR_1 * sigma_i[i]
-            
-            if OCR_1 == 1:
-                settelment[i] = 1000*(delta_h/(1+e_0_1)) * C_c_1 * np.log(sigma_f[i]/sigma_i[i])
-            elif OCR_1 > 1 and sigma_f[i] <= sigma_p[i]:
-                settelment[i] = 1000*(delta_h/(1+e_0_1)) * C_s_1 * np.log(sigma_f[i]/sigma_i[i])
-            elif OCR_1 > 1 and sigma_f[i] > sigma_p[i]:
-                settelment[i] = 1000*(delta_h/(1+e_0_1)) * ((C_s_1 * np.log(sigma_p[i]/sigma_i[i])) + 
-                                                        (C_c_1 * np.log(sigma_f[i]/sigma_p[i])))
-
-        elif depth > z1 and depth <= z1 + z2:
-            if depth <= water_table:
-                sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * gamma_2
-            else:
-                sigma_i[i] = sigma_i[int(z1/step)]+ (depth - z1) * (gamma_r_2 - gamma_water) 
-
-            sigma_f[i] = sigma_i[i] + stress_change[i]
-            sigma_p[i] = OCR_2 * sigma_i[i]
-
-            if OCR_2 == 1:
-                settelment[i] = 1000*(delta_h/(1+e_0_2)) * C_c_2 * np.log(sigma_f[i]/sigma_i[i])
-            elif OCR_2 > 1 and sigma_f[i] <= sigma_p[i]:
-                settelment[i] = 1000*(delta_h/(1+e_0_2)) * C_s_2 * np.log(sigma_f[i]/sigma_i[i])
-            elif OCR_2 > 1 and sigma_f[i] > sigma_p[i]:
-                settelment[i] = 1000*(delta_h/(1+e_0_2)) * ((C_s_2 * np.log(sigma_p[i]/sigma_i[i])) + 
-                                                        (C_c_2 * np.log(sigma_f[i]/sigma_p[i])))
-        else:
-            if depth <= water_table:
-                sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * gamma_3
-            else:
-                sigma_i[i] = sigma_i[int((z1 + z2)/step)]+ (depth - z1 - z2) * (gamma_r_3 - gamma_water)
-
-            sigma_f[i] = sigma_i[i] + stress_change[i]
-            sigma_p[i] = OCR_3 * sigma_i[i]
-
-            if OCR_3 == 1:
-                settelment[i] = 1000*(delta_h/(1+e_0_3)) * C_c_3 * np.log(sigma_f[i]/sigma_i[i])
-            elif OCR_3 > 1 and sigma_f[i] <= sigma_p[i]:
-                settelment[i] = 1000*(delta_h/(1+e_0_3)) * C_s_3 * np.log(sigma_f[i]/sigma_i[i])
-            elif OCR_3 > 1 and sigma_f[i] > sigma_p[i]:
-                settelment[i] = 1000* (delta_h/(1+e_0_3)) * ((C_s_3 * np.log(sigma_p[i]/sigma_i[i])) + 
-                                                        (C_c_3 * np.log(sigma_f[i]/sigma_p[i])))
-        settelment[0] = settelment[1]  
-        total_settelment += settelment[i]
-    total_settelment -= settelment[0]
     
+    # horizantal line at the bottonm of the third layer
     stress_change_fig.add_trace(go.Scatter(
-        x=settelment,
-        y=depths,
+        x=[0, 1.2 * max(stress_change)],  # Start at -1 and end at 1
+        y=[z1 + z2 + z3, z1 + z2 + z3],  # Horizontal line at the top of the layer
         mode='lines',
-        xaxis='x2',
-        line=dict(color='green', width=3 ),
-        name='Settelment with depth under point E, Δ𝜌<sub>z,E</sub>',
-        showlegend=True,
+        line=dict(color='black', width=1, dash='dash'),
+        showlegend=False,  # Hide legend for these lines
+        hoverinfo='skip'  # Skip the hover info for these line
     ))
 
-        # add point dot with annottion for E point at the 0 level of the trace line
-    stress_change_fig.add_trace(go.Scatter(
-        x=[max(settelment)],
-        y=[0],
-        mode='markers',
-        xaxis='x2',
-        marker=dict(size=10, color='black'),
-        showlegend=False,
-        hoverinfo='skip'
-    ))
-    stress_change_fig.add_annotation(
-        x=max(settelment), # x-coordinate of arrow head
-        y=0, # y-coordinate of arrow head
-        xref='x2',
-        text="E",  # The label text
-        showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
-        xanchor='left',
-        yanchor='top'  # Align the text to appear above the line
-    )
-            
 
 
-    # print(step, settelment)
 
     stress_change_fig.update_layout(
         xaxis_title=dict(text='Δσ<sub>z,E</sub> (kPa)', font=dict(size=14, weight='bold')),
@@ -917,13 +1014,13 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
             gridwidth=1,
             gridcolor='lightgrey',
             mirror=True,
-            hoverformat=".2f"  # Sets hover value format for y-axis to two decimal places
+            hoverformat=".3f"  # Sets hover value format for y-axis to two decimal places
         ),
         legend=dict(
             yanchor="bottom",  # Align the bottom of the legend box
             y=0,               # Position the legend at the bottom inside the plot
-            xanchor="right",    # Align the right edge of the legend box
-            x=1,               # Position the legend at the right inside the plot
+            xanchor="left",    # Align the right edge of the legend box
+            x=0,               # Position the legend at the right inside the plot
             font= dict(size=9),  # Adjust font size
             bgcolor="rgba(255, 255, 255, 0.7)",  # Optional: Semi-transparent white background
             bordercolor="black",                 # Optional: Border color
@@ -933,10 +1030,7 @@ def update_graphs( z1, z2, z3, water_table, a, b, q, gamma_1, gamma_r_1, gamma_2
     )
 
 
-
-
-    return foundation_fig, soil_layers_fig, stress_change_fig, f"Total settelment under point E = {total_settelment:.2f} mm"
-
+    return foundation_fig, soil_layers_fig, stress_change_fig, settelment_table
 # Run the Dash app
 if __name__ == '__main__':
     app.run_server(debug=True)

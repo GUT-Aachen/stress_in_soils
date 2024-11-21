@@ -37,6 +37,11 @@ h1 {
     margin: 2%;
 }
 
+.graph-input-container {
+    margin: 0%;
+    background-color: #fff;
+}
+
 /* Tooltip container */
 .tooltip {
     position: relative;
@@ -94,18 +99,55 @@ h1 {
     margin-left: 4%;
 }
 
-/* Responsive layout for narrow screens */
-/* @media screen and (max-width: 700px) {
+#update-button {
+    width: 100%;
+    height: 50px;
+    margin-bottom: 10px;
+    background-color: #1777d185; /* Green background */
+    color: white; /* White text color */
+    font-size: 16px; /* Font size */
+    border: none; /* No border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.5s ease; /* Smooth transition */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+}
+
+#update-button:hover {
+    background-color: #00549f; /* Darker green when hovered */
+}
+
+
+
+
+@media (max-width: 1200px) {
+    .control-container, .graph-container {
+        width: 100%; 
+    }
     .graph-container {
-        width: 100%;
+        flex-direction: column;
     }
+}
 
-    #control-container {
-        width: 100%;
-        margin-bottom: 1%;
+@media (max-width: 800px) {
+    .h1 {
+        font-size: 5vw;
     }
+    .slider-label, .input-label {
+        font-size: 3vw;
+    }
+    .input-field {
+        width: 30%;
+    }
+}
 
-    .slider-container {
-        width: 100%;
+@media (max-width: 600px) {
+    .slider-label, .input-label {
+        font-size: 4vw;
     }
-} */
+    .input-field {
+        width: 50%;
+    }
+}
+
+
