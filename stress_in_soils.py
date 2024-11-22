@@ -15,10 +15,10 @@ app._favicon = ('assets/favicon.ico')
 # Updated layout with sliders on top and layer properties below
 app.layout = html.Div([
     # Main container
-    html.Div(style={'display': 'flex', 'flexDirection': 'row', 'width': '100%', 'height': '100vh'}, children=[
+    html.Div(style={'display': 'flex', 'flexDirection': 'row', 'width': '100%'}, children=[
         # Control container (sliders)
         html.Div(id='control-container', style={'width': '25%', 'padding': '2%', 'flexDirection': 'column'}, children=[
-            html.H1('Stress in Soils', style={'textAlign': 'center'}, className='h1'),
+            html.H1('Stress in Soils', className='h1'),
 
             # Add the update button
             html.Button("Update Graphs", id='update-button', n_clicks=0, style={'width': '100%', 'height': '5vh', 'marginBottom': '1vh'}),
@@ -82,167 +82,167 @@ app.layout = html.Div([
         # Properties for each layer
         html.Div(className='layer-properties', children=[
                 # foundation Properties
-                html.H3('Foundation:', style={'textAlign': 'left'}),
+                html.H3('Foundation:', style={'textAlign': 'left'}, className='h3'),
                 html.Label(["a", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Length of the footing', className='tooltiptext')
                             ]),'(m)'], className='input-label'),
-                dcc.Input(id='a', type='number', value=4, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='a', type='number', value=4, step=0.1, className='input-field'),
                 html.Label(["b", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Width of the footing', className='tooltiptext')
                             ]),'(m)'], className='input-label'),
-                dcc.Input(id='b', type='number', value=2, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='b', type='number', value=2, step=0.1, className='input-field'),
                 html.Label(["q", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Footing load', className='tooltiptext')
                             ]),'(kPa)'], className='input-label'),
-                dcc.Input(id='q', type='number', value=100, step=1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='q', type='number', value=100, step=1, className='input-field'),
 
 
                 # Layer 1 Properties
-                html.H3('Layer 1:', style={'textAlign': 'left'}),
+                html.H3('Layer 1:', style={'textAlign': 'left'}, className='h3'),
                 html.Label([f'γ', html.Sub('d'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Dry unit weight of Layer 1', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gamma_1', type='number', value=18, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_1', type='number', value=18, step=0.01, className='input-field'),
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Saturated unit weight of Layer 1', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gamma_r_1', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_r_1', type='number', value=19, step=0.01, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                     html.Span('Submerged unit weight of Layer 1', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
-                    html.Div(id='gamma_prime_1', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
+                    html.Div(id='gamma_prime_1', className='input-field')  
                 ]),
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_1', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_c_1', type='number', value=0.1, step=0.01, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_1', type='number', value=0.05, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_s_1', type='number', value=0.05, step=0.01, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('initial void ratio of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='e_0_1', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='e_0_1', type='number', value=2, step=0.01, className='input-field'),
                 html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('OverConsolidation ratio of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='OCR_1', type='number', value=1, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='OCR_1', type='number', value=1, step=0.1, className='input-field'),
 
                 # Layer 2 Properties
-                html.H3('Layer 2:', style={'textAlign': 'left'}),
+                html.H3('Layer 2:', style={'textAlign': 'left'}, className='h3'),
                 html.Label([f'γ', html.Sub('d'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Dry unit weight of Layer 2', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gamma_2', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_2', type='number', value=19, step=0.01, className='input-field'),
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Saturated unit weight of Caly', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gamma_r_2', type='number', value=21, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_r_2', type='number', value=21, step=0.01, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                     html.Span('Submerged unit weight of Layer 2', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
-                    html.Div(id='gamma_prime_2', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
+                    html.Div(id='gamma_prime_2',className='input-field')  
                 ]),
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_2', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_c_2', type='number', value=0.1, step=0.01, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_2', type='number', value=0.05, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_s_2', type='number', value=0.05, step=0.01, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('initial void ratio of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='e_0_2', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='e_0_2', type='number', value=2, step=0.01, className='input-field'),
                 html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('OverConsolidation ratio of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='OCR_2', type='number', value=1, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='OCR_2', type='number', value=1, step=0.1, className='input-field'),
 
                 # Layer 3 Properties
-                html.H3('Layer 3:', style={'textAlign': 'left'}),
+                html.H3('Layer 3:', style={'textAlign': 'left'}, className='h3'),
                 html.Label([f'γ', html.Sub('d'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Dry unit weight of Layer 3', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gamma_3', type='number', value=18, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_3', type='number', value=18, step=0.01, className='input-field'),
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Saturated unit weight of Layer 3', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
-                dcc.Input(id='gamma_r_3', type='number', value=19, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='gamma_r_3', type='number', value=19, step=0.01, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
                     html.Label([f'γ′', 
                                 html.Div(className='tooltip', children=[
                                     html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                     html.Span('Submerged unit weight of Layer 3', className='tooltiptext')
                                 ])], className='input-label', style={'marginRight': '5px'}),
-                    html.Div(id='gamma_prime_3', style={'width': 'auto', 'display': 'inline-block', 'fontWeight': 'bold', 'color': 'red'})  
+                    html.Div(id='gamma_prime_3', className='input-field')  
                 ]),
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_3', type='number', value=0.1, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_c_3', type='number', value=0.1, step=0.01, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_3', type='number', value=0.05, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='C_s_3', type='number', value=0.05, step=0.01, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('initial void ratio of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='e_0_3', type='number', value=2, step=0.01, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='e_0_3', type='number', value=2, step=0.01, className='input-field'),
                 html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('OverConsolidation ratio of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='OCR_3', type='number', value=1, step=0.1, style={'width': '12%'}, className='input-field'),
+                dcc.Input(id='OCR_3', type='number', value=1, step=0.1, className='input-field'),
             ]),
         ]),
 
@@ -271,7 +271,7 @@ app.layout = html.Div([
                         html.Div(
                             style={'height': '80%'},  # Second graph takes the remaining 50% of the height
                             children=[
-                                dcc.Graph(id='soil-layers-graph', style={'height': '100%', 'width': '100%'})
+                                dcc.Graph(id='soil-layers-graph', style={'height': '80%', 'width': '100%'})
                             ]
                         ),
                     ]
@@ -284,28 +284,26 @@ app.layout = html.Div([
                             children=[dash_table.DataTable(
                                     id='settelment-table',
                                         columns=[
-                                            {'name': 'sublayer', 'id': 'column_1'},  # First column
-                                            {'name': 'settelment', 'id': 'column_2'},  # Second column
+                                            {'name': 'Sublayer thickness (m)', 'id': 'column_1'},  # First column
+                                            {'name': 'Total settelment (mm)', 'id': 'column_2'},  # Second column
                                         ],
                                         data=[ ], # the contents of the table
-                                        merge_duplicate_headers=True,  # Merge cells for the title
                                         style_data={
-                                            'whiteSpace': 'normal',
                                             'height': 'auto',
                                             'textAlign': 'center',
                                         },
                                         style_cell={
                                             'padding': '0px',
-                                            'fontSize': '2vh',
+                                            'fontSize': '1vw',
                                             'fontFamily': 'Arial',
                                         },
                                         style_header={
-                                            'display': 'none'  # Hides default headers
+                                            'backgroundColor': 'rgb(230, 230, 230)',
+                                            'fontSize': '1vw',
+                                            'textAlign': 'center',
                                         },
-                                        style_table={
-                                            'width': '100%',
-                                            'overflowX': 'auto'
-                                        }
+   
+
                                 )],
                          
                         ),
@@ -316,13 +314,13 @@ app.layout = html.Div([
                                             html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                             html.Span('Sublayer thickness to calculate change of stress and settelment', className='tooltiptext')
                                         ])], className='input-label'),
-                            dcc.Input(id='input-factor', type='number', value=1, min=0.01, max=1, step=0.01, style={'margin': '1%', 'width':'12%'}),
+                            dcc.Input(id='input-factor', type='number', value=1, min=0.01, max=1, step=0.01, className='input-field'),
                             ]         
                         ),
                         html.Div(
                             style={'height': '80%'},  
                             children=[
-                                dcc.Graph(id='stress-change-graph', style={'height': '100%', 'width': '100%'}) 
+                                dcc.Graph(id='stress-change-graph', style={'height': '80%', 'width': '100%'}) 
                             ]
                         ),
                     ]
@@ -482,7 +480,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=1.07 * y1_dim,  # Slightly above the line
         text=f"a= {a}m",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -493,7 +491,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=0.5*(y1_dim - y0_dim) + y0_dim,  # Middle y-coordinate
         text=f"b= {b}m",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='right',
         yanchor='middle',  # Align the text to appear above the line
         textangle=-90
@@ -515,7 +513,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=b/2, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -524,7 +522,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=b/2, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -534,7 +532,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         x=[(x1_dim-x0_dim)/2 + x0_dim],
         y=[b/2],
         mode='markers',
-        marker=dict(size=10, color='black'),
+        marker=dict(color='black'),
         showlegend=False,
         hoverinfo='skip'
     ))
@@ -543,7 +541,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=b/2, # y-coordinate of arrow head
         text="E",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='left',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -615,7 +613,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=0, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -624,7 +622,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=0, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
-        font=dict(size=14, color="black"),
+        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -683,7 +681,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             end=0.9,
             size=0.1,
             showlabels=True,
-            labelfont=dict(size=12, color='black')  # Ensures labels are visible
+            # labelfont=dict(size=12, color='black')  # Ensures labels are visible
         ),
         colorscale='YlOrRd',  # Use 'Cividis' or 'Plasma' for alternatives
         showscale=False,
@@ -699,7 +697,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
     soil_layers_fig.update_layout(
         plot_bgcolor='white',
         # autosize=False,
-        xaxis_title= dict(text='Width (m)', font=dict(size=14,weight='bold')),
+        xaxis_title= dict(text='Width (m)', font=dict(weight='bold')),
         xaxis=dict(
             range=[0, 4*a],  # Adjusting the x-range as needed
             side = 'top',
@@ -715,7 +713,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             # scaleanchor="y",  # Link x and y axes scaling
             # scaleratio=1,
         ),
-        yaxis_title= dict(text='Depth (m)', font=dict(size=14,weight='bold')),
+        yaxis_title= dict(text='Depth (m)', font=dict(weight='bold')),
         yaxis=dict(
             range=[total_depth, y_top],  # Adjusted range for the y-axis (inverted for depth)
             showticklabels=True,
@@ -763,7 +761,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             scaleanchor="x",  # Link y-axis scaling with x-axis
             scaleratio=1,
         ),
-        margin=dict(l=90, r=40, t=10, b=10),
+        margin=dict(l=60, r=40, t=10, b=10),
     )
 
     # Third figure (stress_change_fig)
@@ -882,9 +880,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         return depths, stress_change, settelment, total_settelment
 
    # Initialize the settlement table with the title row
-    settelment_table = [
-        {'column_1': 'Sublayer thickness (m)', 'column_2': 'Total settlement (mm)'}  # Title row
-    ]
+    settelment_table = [    ]
 
     # Add the stress change and settlement traces to the figure
     for i, step in enumerate((sublayer_thickness, 0.05)):
@@ -957,7 +953,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
 
 
     stress_change_fig.update_layout(
-        xaxis_title=dict(text='Δσ<sub>z,E</sub> (kPa)', font=dict(size=14, weight='bold')),
+        xaxis_title=dict(text='Δσ<sub>z,E</sub> (kPa)', font=dict(weight='bold')),
         plot_bgcolor='white',
         xaxis=dict(
             range=[0, 1.2 * max(stress_change)],
@@ -978,7 +974,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             hoverformat=".2f"  # Sets hover value format for x-axis to two decimal places
         ),
         xaxis2=dict(  # Second x-axis (Displacement)
-            title=dict(text='Δ𝜌<sub>z,E</sub> (mm)', font=dict(size=12, weight='bold')),
+            title=dict(text='Δ𝜌<sub>z,E</sub> (mm)', font=dict(weight='bold')),
             overlaying='x',  # Share the same space as the first x-axis
             title_standoff=1,
             side='top',   
@@ -998,7 +994,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             hoverformat=".2f",  # Sets hover value format for x-axis to two decimal places
             range=[0,  1.4* max(settelment)],  # Match the range of the first x-axis
         ),
-        yaxis_title=dict(text='Depth (m)', font=dict(size=14, weight='bold')),
+        yaxis_title=dict(text='Depth (m)', font=dict(weight='bold')),
         yaxis=dict(
             range=[total_depth, y_top],
             zeroline=False,
@@ -1021,7 +1017,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             y=0,               # Position the legend at the bottom inside the plot
             xanchor="left",    # Align the right edge of the legend box
             x=0,               # Position the legend at the right inside the plot
-            font= dict(size=9),  # Adjust font size
+            # font= dict(size=9),  # Adjust font size
             bgcolor="rgba(255, 255, 255, 0.7)",  # Optional: Semi-transparent white background
             bordercolor="black",                 # Optional: Border color
             borderwidth=1                        # Optional: Border width

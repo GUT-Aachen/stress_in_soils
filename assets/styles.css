@@ -16,29 +16,66 @@ h1 {
     color: #00549f;
     text-align: center;
     margin-top: 20%;
+    font-size: 2vw;
 }
 
 .slider-label {
     font-weight: bold;
     color: #cc2323;
     margin-left: 1%;
+    font-size: 1.2vw;
 }
+
 
 .slider {
     margin-top: 1%;
-    margin-left: 1%;
+    margin-bottom: 2%;
+    margin-left: 0%;
 }
+
+/* Style the marks' font */
+.rc-slider-mark-text {
+    font-size: 0.8vw; /* Adjust the font size */
+    font-family: 'Arial', sans-serif; /* Set the font family */
+    color: #333; /* Set the font color */
+    font-weight: bold; /* Optional: bold font */
+}
+
+/* Style the slider tooltip (indicator) */
+.rc-slider-tooltip-inner {
+    font-size: 0.9vw; /* Adjust the font size */
+    font-family: 'Arial', sans-serif; /* Set the font family */
+    color: #ffffff; /* Set the text color */
+    background-color: #00549f; /* Change the tooltip background color */
+    border-radius: 40%; /* Add rounded corners */
+}
+
+
+
 
 .layer-properties {
     margin: 1%;
 }
 
-.input-label {
-    margin: 2%;
+.h3 {
+    color: #080808;
+    margin-left: 1%;
+    font-size: 1vw;
 }
 
+.input-label {
+    margin: 2%;
+    font-size: 0.8vw;
+}
+
+.input-field {
+    width: 3vw;
+    font-size: 0.8vw;
+}
+
+
 .graph-input-container {
-    margin: 0%;
+    margin-top: 2%;
     background-color: #fff;
 }
 
@@ -52,15 +89,15 @@ h1 {
 /* Tooltip text */
 .tooltip .tooltiptext {
     visibility: hidden;
-    width: 150px; /* Width of the tooltip */
+    width: 10vw; /* Width of the tooltip */
     background-color: #00559fad; /* Background color */
     color: #fff; /* Text color */
     text-align: center;
     font-family: 'Arial', sans-serif; /* Font family */
-    font-size: 14px; /* Font size */
+    font-size: 0.8vw; /* Font size */
     font-weight: 400; /* Font weight (400 is regular) */
     line-height: 1.4; /* Line height for readability */
-    border-radius: 6px; /* Rounded corners */
+    border-radius: 5%; /* Rounded corners */
     padding: 5%; /* Padding inside the tooltip */
     position: absolute;
     z-index: 1;
@@ -74,9 +111,12 @@ h1 {
 
 /* Info icon */
 .info-icon {
-    width: 15px; /* Width of the icon */
-    height: 15px; /* Height of the icon */
-    margin-left: 2px; /* Space between label and icon */
+    width: 0.8vw; /* Width of the icon */
+    height: 0.8vw; /* Height of the icon */
+    margin-left: 10%; /* Space between label and icon */
+    margin-right: 10%; /* Space between label and icon */
+    max-width: 150%; /* Optional: limit the maximum width */
+    max-height: 150%; /* Optional: limit the maximum height */
 }
 
 /* Show the tooltip on hover */
@@ -99,6 +139,16 @@ h1 {
     margin-left: 4%;
 }
 
+#settelment-table{
+    margin-top: 2%;
+    width: 100%;
+    height: 2vw;
+    border-collapse: collapse;
+    border-spacing: 0;
+    border: 1px solid #ddd;
+}
+
+
 #update-button {
     width: 100%;
     height: 50px;
@@ -116,38 +166,4 @@ h1 {
 #update-button:hover {
     background-color: #00549f; /* Darker green when hovered */
 }
-
-
-
-
-@media (max-width: 1200px) {
-    .control-container, .graph-container {
-        width: 100%; 
-    }
-    .graph-container {
-        flex-direction: column;
-    }
-}
-
-@media (max-width: 800px) {
-    .h1 {
-        font-size: 5vw;
-    }
-    .slider-label, .input-label {
-        font-size: 3vw;
-    }
-    .input-field {
-        width: 30%;
-    }
-}
-
-@media (max-width: 600px) {
-    .slider-label, .input-label {
-        font-size: 4vw;
-    }
-    .input-field {
-        width: 50%;
-    }
-}
-
 
