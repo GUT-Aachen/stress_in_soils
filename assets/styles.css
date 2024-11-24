@@ -50,9 +50,6 @@ h1 {
     border-radius: 40%; /* Add rounded corners */
 }
 
-
-
-
 .layer-properties {
     margin: 1%;
 }
@@ -139,13 +136,34 @@ h1 {
     margin-left: 4%;
 }
 
-#settelment-table{
-    margin-top: 2%;
+/* Style for the table */
+.anchored-table {
     width: 100%;
-    height: 2vw;
     border-collapse: collapse;
-    border-spacing: 0;
-    border: 1px solid #ddd;
+    font-size: 1vw;
+    font-family: Arial, sans-serif;
+    border: 1px solid black;
+    position: absolute; /* Anchor the table */
+    bottom: 0; /* Position it at the bottom of the container */
+}
+
+/* Style for the table headers */
+.table-header {
+    text-align: center;
+    background-color: rgb(230, 230, 230); /* Optional for header styling */
+}
+
+/* Style for table cells */
+.table-cell {
+    text-align: center;
+    border: 1px solid black; /* Adds border to all cells */
+    background-color: white; /* Ensures cell background matches the table */
+}
+
+/* Style for the input container inside the table cell */
+.input-container {
+    display: inline-block;
+    text-align: center;
 }
 
 

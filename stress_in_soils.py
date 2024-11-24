@@ -262,7 +262,7 @@ app.layout = html.Div([
                     children=[
                         # First graph (Foundation dimension)
                         html.Div(
-                            style={'height': '20%'},  # First graph takes 50% of the height
+                            style={'height': '20%', 'position': 'relative'},  # First graph takes 50% of the height
                             children=[
                                 dcc.Graph(id='foundation-dimension-graph', style={'height': '100%', 'width': '100%'})
                             ]
@@ -280,43 +280,47 @@ app.layout = html.Div([
                 html.Div(
                     style={'display': 'flex', 'flexDirection': 'column', 'width': '40%', 'height': '100%'},  # Adjusted to take 55% of the width
                     children=[
-                        html.Div(style={'height': '15%'},
-                            children=[dash_table.DataTable(
-                                    id='settelment-table',
-                                        columns=[
-                                            {'name': 'Sublayer thickness (m)', 'id': 'column_1'},  # First column
-                                            {'name': 'Total settelment (mm)', 'id': 'column_2'},  # Second column
-                                        ],
-                                        data=[ ], # the contents of the table
-                                        style_data={
-                                            'height': 'auto',
-                                            'textAlign': 'center',
-                                        },
-                                        style_cell={
-                                            'padding': '0px',
-                                            'fontSize': '1vw',
-                                            'fontFamily': 'Arial',
-                                        },
-                                        style_header={
-                                            'backgroundColor': 'rgb(230, 230, 230)',
-                                            'fontSize': '1vw',
-                                            'textAlign': 'center',
-                                        },
-   
-
-                                )],
-                         
-                        ),
-                        html.Div(style={'height': '5%', 'display': 'inline-block'}, className='graph-input-container',
-                            children=[
-                            html.Label(["Preferred sublayer thickness (m)", 
-                                        html.Div(className='tooltip', children=[
-                                            html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                            html.Span('Sublayer thickness to calculate change of stress and settelment', className='tooltiptext')
-                                        ])], className='input-label'),
-                            dcc.Input(id='input-factor', type='number', value=1, min=0.01, max=1, step=0.01, className='input-field'),
-                            ]         
-                        ),
+                        html.Div(style={'height': '20%', 'position': 'relative'},
+                                children=[
+                                    html.Table(
+                                        className='anchored-table',  # Assign a class for the table
+                                        children=[
+                                            html.Thead(
+                                                html.Tr([
+                                                    html.Th('Sublayer thickness (m)', className='table-header'),
+                                                    html.Th('Total settlement (mm)', className='table-header'),
+                                                ])
+                                            ),
+                                            html.Tbody([
+                                                html.Tr([
+                                                    html.Td('Reference= 0.05', className='table-cell'),
+                                                    html.Td(id='sett_ref', children='', className='table-cell'),
+                                                ]),
+                                                html.Tr([
+                                                    html.Td(
+                                                        html.Div(
+                                                            [
+                                                                "Preferred= ",  # Label text
+                                                                dcc.Input(
+                                                                    id='input-factor',
+                                                                    type='number',
+                                                                    value=1,
+                                                                    min=0.01,
+                                                                    max=1,
+                                                                    step=0.01,
+                                                                    className='input-field'
+                                                                )
+                                                            ],
+                                                            className='input-container'
+                                                        ),
+                                                        className='table-cell'
+                                                    ),
+                                                    html.Td(id='sett_pref', children='', className='table-cell'),
+                                                ]),
+                                            ])
+                                        ]
+                                    )
+                                ]),
                         html.Div(
                             style={'height': '80%'},  
                             children=[
@@ -398,14 +402,14 @@ def update_gamma_prime(z1, z2, z3, gamma_r1, gamma_r2, gamma_r3, a_value, b_valu
     [Output('foundation-dimension-graph', 'figure'),
      Output('soil-layers-graph', 'figure'),
      Output('stress-change-graph', 'figure'),
-     Output('settelment-table', 'data')],
+     Output('sett_ref', 'children'),
+     Output('sett_pref', 'children')],
     [Input('update-button', 'n_clicks')],
     [State('input-factor', 'value'),
      State('z-1', 'value'),
      State('z-2', 'value'),
      State('z-3', 'value'),
      State('water-table', 'value'),
-     # Add all other input fields as State
      State('a', 'value'),
      State('b', 'value'),
      State('q', 'value'),
@@ -454,8 +458,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
     soil_layers_fig = go.Figure()
     stress_change_fig = go.Figure()
 
-    # x-range and y range for the foundation figure
-
+ 
     # add top view dimension scaled to 0-1
     x0_dim = 2*a - a/2
     y0_dim = 0
@@ -470,8 +473,6 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         x1=x1_dim,
         y1=y1_dim,
         line=dict(width=3, color="black"),
-        # fillcolor="lightskyblue",
-        # opacity=0.5,
     )
 
     # Add text annotation at the middle of the line
@@ -480,7 +481,6 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=1.07 * y1_dim,  # Slightly above the line
         text=f"a= {a}m",  # The label text
         showarrow=False,  # No arrow for the text itself
-        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -491,7 +491,6 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=0.5*(y1_dim - y0_dim) + y0_dim,  # Middle y-coordinate
         text=f"b= {b}m",  # The label text
         showarrow=False,  # No arrow for the text itself
-        # font=dict(size=14, color="black"),
         xanchor='right',
         yanchor='middle',  # Align the text to appear above the line
         textangle=-90
@@ -522,7 +521,6 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=b/2, # y-coordinate of arrow head
         text="A",  # The label text
         showarrow=False,  # No arrow for the text itself
-        # font=dict(size=14, color="black"),
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -541,7 +539,6 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         y=b/2, # y-coordinate of arrow head
         text="E",  # The label text
         showarrow=False,  # No arrow for the text itself
-        # font=dict(size=14, color="black"),
         xanchor='left',
         yanchor='bottom'  # Align the text to appear above the line
     )
@@ -626,11 +623,22 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         xanchor='center',
         yanchor='bottom'  # Align the text to appear above the line
     )
+    
+    # Add the soil layers to the figure
 
-    no_of_steps = int((4*a)//0.1)
+    x_1 = np.arange(start=x0_dim - 1.5*a, stop=x0_dim - 0.5*a, step=0.2*a)
+    x_2 = np.arange(start=x0_dim - 0.5*a, stop=x1_dim + 0.5*a, step=0.01*a)
+    x_3 = np.arange(start=x1_dim + 0.5*a, stop=x1_dim + 1.5*a, step=0.2*a)
 
-    x = np.linspace(x0_dim - 1.5*a, x1_dim + 1.5*a, int(no_of_steps/1))
-    z = np.linspace(0.000000001, total_depth, int(no_of_steps/1))
+    if total_depth > 3*a:
+        z_1 = np.arange(start=0.000000001, stop=3*a, step=0.01*a)
+        z_2 = np.arange(start=3*a, stop=total_depth, step=0.2*a)
+    else:
+        z_1 = np.arange(start=0.000000001, stop=total_depth, step=0.01*a)
+        z_2 = []
+
+    x= np.concatenate([x_1, x_2, x_3])
+    z = np.concatenate([z_1, z_2])
     X, Z = np.meshgrid(x, z)
 
     # Initialize I as an array filled with zeros
@@ -643,15 +651,12 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         if x_val <= x0_dim:
             a1 = x1_dim - x_val
             a2 = x0_dim - x_val
-            # print(b1, b2)
         elif x_val >= x1_dim:
             a1 = x_val - x0_dim
             a2 = x_val - x1_dim
-            # print(x_val)
         else:
             a1 = x1_dim - x_val
             a2 = x_val - x0_dim
-            # print(x_val)
 
         R1 = np.sqrt(a1**2 + b1**2 + Z**2)
         R2 = np.sqrt(a2**2 + b2**2 + Z**2)
@@ -789,7 +794,8 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             depths_z3 = np.append(depths_z3, depths_z3[-1] +  remaining_thickness3 / 2)
 
         # Initialize stress_change and settelment arrays
-        depths = np.concatenate([depths_z1, depths_z2, depths_z3])
+        all_depths = np.concatenate([depths_z1, depths_z2, depths_z3])
+        depths = np.sort(all_depths)[::-1]
         stress_change = np.zeros_like(depths)
         settelment = np.zeros_like(depths)
 
@@ -879,9 +885,8 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
 
         return depths, stress_change, settelment, total_settelment
 
-   # Initialize the settlement table with the title row
-    settelment_table = [    ]
-
+    # Initialize the total settlement list
+    settelments = []
     # Add the stress change and settlement traces to the figure
     for i, step in enumerate((sublayer_thickness, 0.05)):
         depths, stress_change, settelment, total_settelment = stress_change_and_settelment(step)
@@ -913,17 +918,12 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             name='Settlement, Δ𝜌<sub>z,E</sub>, sublayer thickness = '+str(step)+'m',
             showlegend=True,
         )) 
-        ref_pre = ""
-        if step == 0.05:
-            ref_pre = "Reference: "
-        else:
-            ref_pre = "Preffered: "
 
-        # Append data for the current loop to the settlement table
-        settelment_table.append({
-            'column_1': f'{ref_pre}{step}',  # Sublayer thickness
-            'column_2': f'{round(total_settelment, 2)}'  # Total settlement
-        })
+        # Append the total settlement to the list
+        if step == 0.05:
+            settelments.append( f'{round(total_settelment, 2)}')
+        else:
+            settelments.append( f'{round(total_settelment, 2)}')
 
 
             
@@ -1015,18 +1015,19 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         legend=dict(
             yanchor="bottom",  # Align the bottom of the legend box
             y=0,               # Position the legend at the bottom inside the plot
-            xanchor="left",    # Align the right edge of the legend box
-            x=0,               # Position the legend at the right inside the plot
-            # font= dict(size=9),  # Adjust font size
+            xanchor="right",    # Align the right edge of the legend box
+            x=1,               # Position the legend at the right inside the plot
+            font= dict(size=9),  # Adjust font size
             bgcolor="rgba(255, 255, 255, 0.7)",  # Optional: Semi-transparent white background
             bordercolor="black",                 # Optional: Border color
             borderwidth=1                        # Optional: Border width
         ),
         margin=dict(l=30, r=10, t=10, b=20),
     )
+    
 
 
-    return foundation_fig, soil_layers_fig, stress_change_fig, settelment_table
+    return foundation_fig, soil_layers_fig, stress_change_fig, settelments[0], settelments[1]
 # Run the Dash app
 if __name__ == '__main__':
     app.run_server(debug=True)
