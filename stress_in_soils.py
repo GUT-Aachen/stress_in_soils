@@ -548,7 +548,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
         if layer['thickness'] > 0:
             # Add a line at the top and bottom of each layer
             soil_layers_fig.add_trace(go.Scatter(
-                x=[0, 6*a], 
+                x=[0, 4*a], 
                 y=[layer['top'], layer['top']],  # Horizontal line at the top of the layer
                 mode='lines',
                 line=dict(color='black', width=1, dash='dash'),
@@ -558,7 +558,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             
     # horizantal line at the bottonm of the third layer
     soil_layers_fig.add_trace(go.Scatter(
-        x=[0, 6*a],  # Start at -1 and end at 1
+        x=[0, 4*a],  # Start at -1 and end at 1
         y=[total_depth, total_depth],  
         mode='lines',
         line=dict(color='black', width=1, dash='dash'),
@@ -568,7 +568,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
 
     # Add a line at the water table
     soil_layers_fig.add_trace(go.Scatter(
-        x=[0, 6*a],  # Start at -1 and end at 1
+        x=[0, 4*a],  # Start at -1 and end at 1
         y=[water_table, water_table],  # Horizontal line at the top of the layer
         mode='lines',
         line=dict(color='blue', width=2, dash='dot'),
@@ -701,7 +701,6 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
     # First figure (soil_layers_fig)
     soil_layers_fig.update_layout(
         plot_bgcolor='white',
-        # autosize=False,
         xaxis_title= dict(text='Width (m)', font=dict(weight='bold')),
         xaxis=dict(
             range=[0, 4*a],  # Adjusting the x-range as needed
