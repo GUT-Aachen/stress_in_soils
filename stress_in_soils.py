@@ -161,7 +161,7 @@ app.layout = html.Div([
                 html.Label([f'γ', html.Sub('sat'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Saturated unit weight of Caly', className='tooltiptext')
+                                html.Span('Saturated unit weight of Layer 2', className='tooltiptext')
                             ]),' (kN/m³)'], className='input-label'),
                 dcc.Input(id='gamma_r_2', type='number', value=21, step=0.01, className='input-field'),
                 html.Div(style={'display': 'flex', 'alignItems': 'center', 'whiteSpace': 'nowrap'}, children=[
@@ -175,7 +175,7 @@ app.layout = html.Div([
                 html.Label([f'C', html.Sub('c'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
-                                html.Span('Compression index of Layer 1', className='tooltiptext')
+                                html.Span('Compression index of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
                 dcc.Input(id='C_c_2', type='number', value=0.1, step=0.01, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
