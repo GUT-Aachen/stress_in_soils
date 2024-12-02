@@ -130,13 +130,13 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_1', type='number', value=0.1, step=0.01, className='input-field'),
+                dcc.Input(id='C_c_1', type='number', value=0.1, step=0.001, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 1', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_1', type='number', value=0.05, step=0.01, className='input-field'),
+                dcc.Input(id='C_s_1', type='number', value=0.05, step=0.0001, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -177,19 +177,19 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_2', type='number', value=0.1, step=0.01, className='input-field'),
+                dcc.Input(id='C_c_2', type='number', value=0.1, step=0.001, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_2', type='number', value=0.05, step=0.01, className='input-field'),
+                dcc.Input(id='C_s_2', type='number', value=0.05, step=0.0001, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('initial void ratio of Layer 2', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='e_0_2', type='number', value=2, step=0.01, className='input-field'),
+                dcc.Input(id='e_0_2', type='number', value=2, step=0.0001, className='input-field'),
                 html.Label(["OCR", 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -224,13 +224,13 @@ app.layout = html.Div([
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Compression index of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_c_3', type='number', value=0.1, step=0.01, className='input-field'),
+                dcc.Input(id='C_c_3', type='number', value=0.1, step=0.001, className='input-field'),
                 html.Label([f'C', html.Sub('s'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
                                 html.Span('Swelling index of Layer 3', className='tooltiptext')
                             ])], className='input-label'),
-                dcc.Input(id='C_s_3', type='number', value=0.05, step=0.01, className='input-field'),
+                dcc.Input(id='C_s_3', type='number', value=0.05, step=0.0001, className='input-field'),
                 html.Label([f'e', html.Sub('0'), 
                             html.Div(className='tooltip', children=[
                                 html.Img(src='/assets/info-icon.png', className='info-icon', alt='Info'), 
@@ -829,52 +829,60 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
                 sigma_p[i] = OCR_1 * sigma_i[i]
 
                 if OCR_1 == 1:
-                    delta_settlement = 1000 * (step / (1 + e_0_1)) * C_c_1 * np.log(sigma_f[i] / sigma_i[i])
+                    delta_settlement = 1000 * (step / (1 + e_0_1)) * C_c_1 * np.log10(sigma_f[i] / sigma_i[i])
                 elif OCR_1 > 1 and sigma_f[i] <= sigma_p[i]:
-                    delta_settlement = 1000 * (step / (1 + e_0_1)) * C_s_1 * np.log(sigma_f[i] / sigma_i[i])
+                    delta_settlement = 1000 * (step / (1 + e_0_1)) * C_s_1 * np.log10(sigma_f[i] / sigma_i[i])
                 elif OCR_1 > 1 and sigma_f[i] > sigma_p[i]:
                     delta_settlement = 1000 * (step / (1 + e_0_1)) * (
-                        (C_s_1 * np.log(sigma_p[i] / sigma_i[i])) +
-                        (C_c_1 * np.log(sigma_f[i] / sigma_p[i]))
+                        (C_s_1 * np.log10(sigma_p[i] / sigma_i[i])) +
+                        (C_c_1 * np.log10(sigma_f[i] / sigma_p[i]))
                     )
             elif depth > z1 and depth <= z1 + z2:
-                if depth <= water_table:
-                    sigma_i[i] = z1*gamma_1 + (depth - z1) * gamma_2
+                if water_table > z1:
+                    if depth <= water_table:
+                        sigma_i[i] = z1*gamma_1 + (depth - z1) * gamma_2
+                    else:
+                        sigma_i[i] = z1*gamma_1 + (water_table-z1)*gamma_2  + (depth - water_table) * (gamma_r_2 - gamma_water)
                 else:
-                    sigma_i[i] = water_table*gamma_1 + (z1-water_table)*(gamma_r_1-gamma_water)  + (depth - z1) * (gamma_r_2 - gamma_water)
+                    sigma_i[i] = water_table * gamma_1 + (z1 - water_table) * (gamma_r_1 - gamma_water) + (depth - z1) * (gamma_r_2 - gamma_water)
 
                 sigma_f[i] = sigma_i[i] + stress_change[i]
                 sigma_p[i] = OCR_2 * sigma_i[i]
 
+
                 if OCR_2 == 1:
-                    delta_settlement = 1000 * (step / (1 + e_0_2)) * C_c_2 * np.log(sigma_f[i] / sigma_i[i])
+                    delta_settlement = 1000 * (step / (1 + e_0_2)) * C_c_2 * np.log10(sigma_f[i] / sigma_i[i])
                 elif OCR_2 > 1 and sigma_f[i] <= sigma_p[i]:
-                    delta_settlement = 1000 * (step / (1 + e_0_2)) * C_s_2 * np.log(sigma_f[i] / sigma_i[i])
+                    delta_settlement = 1000 * (step / (1 + e_0_2)) * C_s_2 * np.log10(sigma_f[i] / sigma_i[i])
                 elif OCR_2 > 1 and sigma_f[i] > sigma_p[i]:
                     delta_settlement = 1000 * (step / (1 + e_0_2)) * (
-                        (C_s_2 * np.log(sigma_p[i] / sigma_i[i])) +
-                        (C_c_2 * np.log(sigma_f[i] / sigma_p[i]))
+                        (C_s_2 * np.log10(sigma_p[i] / sigma_i[i])) +
+                        (C_c_2 * np.log10(sigma_f[i] / sigma_p[i]))
                     )
+
             else:
-                if depth <= water_table:
-                    sigma_i[i] = z1*gamma_1 + z2*gamma_2 + (depth - z1 - z2) * gamma_3
-                else:
-                    if z1 > water_table:
-                        sigma_i[i] = water_table*gamma_1 + (z1-water_table)*(gamma_r_1-gamma_water)  + z2 * (gamma_r_2 - gamma_water) + (depth - z1 - z2) * (gamma_r_3 - gamma_water)
+                if water_table > z1+z2:
+                    if depth <= water_table:
+                        sigma_i[i] = z1*gamma_1 + z2*gamma_2 + (depth - z1 - z2) * gamma_3
                     else:
-                        sigma_i[i] = water_table*gamma_1 + (water_table-z1)*gamma_2  + (z1+z2-water_table) * (gamma_r_2 - gamma_water)+ (depth- z1 - z2) * (gamma_r_3 - gamma_water)
+                        sigma_i[i] = z1*gamma_1 + z2*gamma_2 + (water_table - z1 - z2) * gamma_3 + (depth - water_table) * (gamma_r_3 - gamma_water)
+                elif water_table > z1 and water_table <= z1+z2:
+                    sigma_i[i] = z1*gamma_1 + (water_table-z1)*gamma_2 + (z1+z2-water_table)*(gamma_r_2-gamma_water) +(depth - z1 - z2) * (gamma_r_3 - gamma_water)
+                else:
+                    sigma_i[i] = water_table * gamma_1 + (z1 - water_table) * (gamma_r_1 - gamma_water) + z2 * (gamma_r_2-gamma_water) + (depth - z1 - z2) * (gamma_r_3 - gamma_water)
+
 
                 sigma_f[i] = sigma_i[i] + stress_change[i]
                 sigma_p[i] = OCR_3 * sigma_i[i]
 
                 if OCR_3 == 1:
-                    delta_settlement = 1000 * (step / (1 + e_0_3)) * C_c_3 * np.log(sigma_f[i] / sigma_i[i])
+                    delta_settlement = 1000 * (step / (1 + e_0_3)) * C_c_3 * np.log10(sigma_f[i] / sigma_i[i])
                 elif OCR_3 > 1 and sigma_f[i] <= sigma_p[i]:
-                    delta_settlement = 1000 * (step / (1 + e_0_3)) * C_s_3 * np.log(sigma_f[i] / sigma_i[i])
+                    delta_settlement = 1000 * (step / (1 + e_0_3)) * C_s_3 * np.log10(sigma_f[i] / sigma_i[i])
                 elif OCR_3 > 1 and sigma_f[i] > sigma_p[i]:
                     delta_settlement = 1000 * (step / (1 + e_0_3)) * (
-                        (C_s_3 * np.log(sigma_p[i] / sigma_i[i])) +
-                        (C_c_3 * np.log(sigma_f[i] / sigma_p[i]))
+                        (C_s_3 * np.log10(sigma_p[i] / sigma_i[i])) +
+                        (C_c_3 * np.log10(sigma_f[i] / sigma_p[i]))
                     )
             # Update cumulative settlement
             settelment[i] = delta_settlement + (settelment[i-1] if i > 0 else 0)
@@ -1009,7 +1017,7 @@ def update_graphs(n_clicks, sublayer_thickness, z1, z2, z3, water_table, a, b, q
             gridwidth=1,
             gridcolor='lightgrey',
             mirror=True,
-            hoverformat=".3f"  # Sets hover value format for y-axis to two decimal places
+            hoverformat=".2f"  # Sets hover value format for y-axis to two decimal places
         ),
         legend=dict(
             yanchor="bottom",  # Align the bottom of the legend box
