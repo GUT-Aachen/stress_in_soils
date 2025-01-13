@@ -9,7 +9,7 @@ import time
 
 app = dash.Dash(__name__, meta_tags=[{"name": "viewport", "content": "width=device-width, initial-scale=1"}])
 
-app.title = 'Earth Pressure'
+app.title = 'Stress in Soils'
 app._favicon = ('assets/favicon.ico')
 
 # Updated layout with sliders on top and layer properties below
@@ -18,7 +18,7 @@ app.layout = html.Div([
     html.Div(style={'display': 'flex', 'flexDirection': 'row', 'width': '100%'}, children=[
         # Control container (sliders)
         html.Div(id='control-container', style={'width': '25%', 'padding': '2%', 'flexDirection': 'column'}, children=[
-            html.H1('Earth Pressure', className='h1'),
+            html.H1('Stress in Soils', className='h1'),
 
             # Add the update button
             html.Button("Update Graphs", id='update-button', n_clicks=0, style={'width': '100%', 'height': '5vh', 'marginBottom': '1vh'}),
